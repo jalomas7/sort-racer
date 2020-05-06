@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
-import Ball from './Ball';
+import BallComponent from './Ball';
 import styled from '@emotion/styled';
+import { Ball } from '../types';
 
 const BallStackContainer = styled.div`
     display: flex;
@@ -8,13 +9,13 @@ const BallStackContainer = styled.div`
 `;
 
 export type BallStackProps = {
-    balls: string[];
+    balls: Ball[];
 }
 
 const BallStack: FunctionComponent<BallStackProps> = ({balls}) => {
     return <BallStackContainer>
         {
-            balls.map((ball, i) => <Ball color={ball} key={i} />)
+            balls.map(ball => <BallComponent color={ball.color} key={ball.id} />)
         }
     </BallStackContainer>
 };

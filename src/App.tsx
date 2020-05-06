@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
-import BallStack from './components/BallStack';
-import { getRandomHexColor } from "./utils";
-
+import BallStack from "./components/BallStack";
+import { useBallContext } from "./providers";
 const AppContainer = styled.div`
   text-align: center;
   display: flex;
@@ -15,14 +14,13 @@ const AppContainer = styled.div`
 `;
 
 const App = () => {
-  const balls = [getRandomHexColor(), getRandomHexColor(), getRandomHexColor(), getRandomHexColor(), getRandomHexColor()];
+  const { ballStacks } = useBallContext();
+
   return (
     <AppContainer>
-        <BallStack balls={balls} />
-        <BallStack balls={balls} />
-        <BallStack balls={balls} />
-        <BallStack balls={balls} />
-        <BallStack balls={balls} />
+      {ballStacks.map((stack) => (
+        <BallStack balls={stack.balls} key={stack.id} />
+      ))}
     </AppContainer>
   );
 };
