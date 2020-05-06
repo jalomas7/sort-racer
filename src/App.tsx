@@ -18,8 +18,8 @@ const App = () => {
 
   return (
     <AppContainer>
-      {ballStacks.map((stack) => (
-        <BallStack balls={stack.balls} key={stack.id} />
+      {Object.keys(ballStacks).map((id) => (
+        <BallStack balls={ballStacks[id].balls} key={id} id={id} />
       ))}
     </AppContainer>
   );

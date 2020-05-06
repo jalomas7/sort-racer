@@ -1,9 +1,10 @@
-export type BallStack = {
-  id: string;
-  balls: Ball[];
+export type BallStacks = {
+  [id: string]: {
+    balls: Ball[];
+  };
 };
 
 export type Ball = {
-  id: string;
-  color: string;
+    id: string;
+    color: string;
 };
