@@ -1,15 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
-import Ball from './components/Ball';
+import BallStack from './components/BallStack';
+import { getRandomHexColor } from "./utils";
 
 const AppContainer = styled.div`
   text-align: center;
-`;
-const AppHeader = styled.header`
+  display: flex;
   background-color: #282c34;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
@@ -17,11 +15,14 @@ const AppHeader = styled.header`
 `;
 
 const App = () => {
+  const balls = [getRandomHexColor(), getRandomHexColor(), getRandomHexColor(), getRandomHexColor(), getRandomHexColor()];
   return (
     <AppContainer>
-      <AppHeader className="App-header">
-        <Ball />
-      </AppHeader>
+        <BallStack balls={balls} />
+        <BallStack balls={balls} />
+        <BallStack balls={balls} />
+        <BallStack balls={balls} />
+        <BallStack balls={balls} />
     </AppContainer>
   );
 };
