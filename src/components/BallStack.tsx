@@ -22,8 +22,8 @@ const BallStack: FunctionComponent<BallStackProps> = ({ balls, id }) => {
       onMouseDown={() => onDrag(id)}
       onMouseUp={() => onDrop(id)}
     >
-      {balls.map((ball) => (
-        <BallComponent color={ball.color} key={ball.id} />
+      {balls.map(({color, id}) => (
+        <BallComponent color={color} key={id} id={id}/>
       ))}
     </BallStackContainer>
   );
