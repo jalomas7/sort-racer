@@ -1,7 +1,6 @@
 import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
 import styled from "@emotion/styled";
+import Ball from './components/Ball';
 
 const AppContainer = styled.div`
   text-align: center;
@@ -17,29 +16,11 @@ const AppHeader = styled.header`
   color: white;
 `;
 
-const AppImg = styled.img`
-  height: 40vmin;
-  pointer-events: none;
-
-  @media (prefers-reduced-motion: no-preference) {
-    animation: App-logo-spin infinite 20s linear;
-  }
-
-  @keyframes App-logo-spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-`;
-
 const App = () => {
   return (
     <AppContainer>
       <AppHeader className="App-header">
-        <AppImg src={logo} className="App-logo" alt="logo" />
+        <Ball />
       </AppHeader>
     </AppContainer>
   );
