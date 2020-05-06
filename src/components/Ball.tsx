@@ -13,8 +13,8 @@ export type BallProps = {
 const BallContainer = styled.div<{
   color: string;
   active: boolean;
-  x?: number;
-  y?: number;
+  x: number;
+  y: number;
 }>`
   border-radius: 100%;
   background: radial-gradient(
@@ -25,15 +25,16 @@ const BallContainer = styled.div<{
   width: 100px;
   height: 100px;
   position: ${({ active }) => (active ? "absolute" : "unset")};
-  left: ${({x}) => x}px;
-  top: ${({y}) => y}px;
+  left: ${({x}) => x - 50}px;
+  top: ${({y}) => y - 50}px;
+  pointer-events: ${({active}) => active ? 'none' : 'unset'};
 `;
 
 const Ball: FunctionComponent<BallProps> = ({
   id,
   color = getRandomHexColor(),
-  x,
-  y,
+  x = 0,
+  y = 0,
 }) => {
   const { activeBall } = useBallContext();
   const isActive: boolean = (activeBall && activeBall.id === id) || false;
