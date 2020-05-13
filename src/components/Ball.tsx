@@ -25,9 +25,9 @@ const BallContainer = styled.div<{
   width: 100px;
   height: 100px;
   position: ${({ active }) => (active ? "absolute" : "unset")};
-  left: ${({x}) => x - 50}px;
-  top: ${({y}) => y - 50}px;
-  pointer-events: ${({active}) => active ? 'none' : 'unset'};
+  left: ${({ x }) => x - 50}px;
+  top: ${({ y }) => y - 50}px;
+  pointer-events: ${({ active }) => (active ? "none" : "unset")};
 `;
 
 const Ball: FunctionComponent<BallProps> = ({

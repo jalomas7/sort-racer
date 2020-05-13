@@ -7,6 +7,17 @@ import { useBallContext } from "../providers";
 const BallStackContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin: 20px;
+`;
+
+const BallStackVase = styled.div`
+  min-width: 120px;
+  height: 200px;
+  background-color: rgba(0,0,0,0.5);
+  position: absolute;
+  bottom: 0;
 `;
 
 export type BallStackProps = {
@@ -22,6 +33,7 @@ const BallStack: FunctionComponent<BallStackProps> = ({ balls, id }) => {
       onMouseDown={() => onDrag(id)}
       onMouseUp={() => onDrop(id)}
     >
+      <BallStackVase />
       {balls.map(({color, id}) => (
         <BallComponent color={color} key={id} id={id}/>
       ))}
