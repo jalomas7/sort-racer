@@ -33,16 +33,19 @@ export type BallStackProps = {
 };
 
 const BallStack: FunctionComponent<BallStackProps> = ({ balls, id }) => {
-  const { onDrag, onDrop } = useBallContext();
+  const { onDrag, onDrop, activeBall } = useBallContext();
 
   return (
     <BallStackContainer
-      onMouseDown={() => onDrag(id)}
-      onMouseUp={() => onDrop(id)}
+      onMouseDown={() => !activeBall && onDrag(id)}
+      onMouseUp={() => activeBall && onDrop(id)}
+      onClick={() => {
+        activeBall && onDrop(id);
+      }}
     >
       <BallStackVase />
-      {balls.map(({color, id}) => (
-        <BallComponent color={color} key={id} id={id}/>
+      {balls.map(({ color, id }) => (
+        <BallComponent color={color} key={id} id={id} />
       ))}
     </BallStackContainer>
   );
