@@ -10,14 +10,21 @@ const BallStackContainer = styled.div`
   align-items: center;
   position: relative;
   margin: 20px;
+  align-self: flex-end;
 `;
 
 const BallStackVase = styled.div`
   min-width: 120px;
-  height: 200px;
-  background-color: rgba(0,0,0,0.5);
+  height: 500px;
+  background-color: rgba(0,0,0,0.2);
   position: absolute;
   bottom: 0;
+  background: linear-gradient(
+    to left,
+    rgba(0,0,0,0.5),
+    rgba(0,0,0,0.4),
+    rgba(0,0,0,0.5)
+  );
 `;
 
 export type BallStackProps = {
