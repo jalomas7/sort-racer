@@ -11,6 +11,7 @@ const BallStackContainer = styled.div`
   position: relative;
   margin: 20px;
   align-self: flex-end;
+  min-width: 120px;
 `;
 
 const BallStackVase = styled.div`
