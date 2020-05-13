@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import BallStack from "./components/BallStack";
 import { useBallContext } from "./providers";
 import Ball from "./components/Ball";
+import {GameWon} from './components'
 
 const AppContainer = styled.div`
   display: flex;
@@ -27,6 +28,7 @@ const App = () => {
         setYPos(e.clientY);
       }}
     >
+      <GameWon />
       {Object.keys(ballStacks).map((id) => (
         <BallStack balls={ballStacks[id].balls} key={id} id={id} />
       ))}

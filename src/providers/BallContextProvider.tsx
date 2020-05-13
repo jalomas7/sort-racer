@@ -17,12 +17,14 @@ export type BallContextType = {
   setActiveBall: Dispatch<SetStateAction<Ball | undefined>>;
   ballStacks: BallStacks;
   ballColors: string[];
+  gameWon: boolean;
   onDrag: (stackId: string) => void;
   onDrop: (stackId: string) => void;
 };
 
 const defaultBallContext: BallContextType = {
   activeBall: undefined,
+  gameWon: false,
   setActiveBall: () => {},
   ballStacks: {},
   ballColors: [],
@@ -52,6 +54,28 @@ export const BallProvider: FunctionComponent = ({ children }) => {
   const [activeBall, setActiveBall] = useState<Ball>();
   const [ballColors, setBallColors] = useState<string[]>([]);
   const [ballStacks, setBallStacks] = useState<BallStacks>({});
+  const [gameWon, setGameWon] = useState<boolean>(false);
+
+  useEffect(() => {
+    if(activeBall !== undefined) {
+      return;
+    }
+
+    let won: boolean = true;
+    Object.keys(ballStacks).forEach(id => {
+      if(ballStacks[id].balls.length < 1) {
+        return;
+      }
+      const firstBallColor = ballStacks[id].balls[0].color;
+      ballStacks[id].balls.forEach(ball => {
+        if(ball.color !== firstBallColor) {
+          won = false;
+          return;
+        }
+      });
+    });
+    setGameWon(won)
+  }, [ballStacks, activeBall]);
 
   const onDrag = useCallback(
     (stackId: string) => {
@@ -95,7 +119,8 @@ export const BallProvider: FunctionComponent = ({ children }) => {
       activeBall,
       setActiveBall,
       onDrag,
-      onDrop
+      onDrop,
+      gameWon
   }
 
   return <BallContext.Provider value={value}>{children}</BallContext.Provider>;

@@ -17,6 +17,7 @@ const BallStackContainer = styled.div`
 const BallStackVase = styled.div`
   min-width: 120px;
   height: 500px;
+  border-radius: 10px;
   background-color: rgba(0,0,0,0.2);
   position: absolute;
   bottom: 0;
