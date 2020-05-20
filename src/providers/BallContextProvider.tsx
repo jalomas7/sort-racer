@@ -20,6 +20,7 @@ export type BallContextType = {
   gameWon: boolean;
   onDrag: (stackId: string) => void;
   onDrop: (stackId: string) => void;
+  resetGame: () => void;
 };
 
 const defaultBallContext: BallContextType = {
@@ -30,6 +31,7 @@ const defaultBallContext: BallContextType = {
   ballColors: [],
   onDrag: () => {},
   onDrop: () => {},
+  resetGame: () => {}
 };
 
 const BallContext = createContext(defaultBallContext);
@@ -97,13 +99,14 @@ export const BallProvider: FunctionComponent = ({ children }) => {
     [ballStacks, activeBall]
   );
 
-  useEffect(() => {
+  const resetGame = () => {
+    setGameWon(false);
     const colors: string[] = [
-      getRandomHexColor(),
-      getRandomHexColor(),
-      getRandomHexColor(),
-      getRandomHexColor(),
-      getRandomHexColor()
+      getRandomHexColor(2),
+      getRandomHexColor(2),
+      getRandomHexColor(2),
+      getRandomHexColor(2),
+      getRandomHexColor(2)
     ];
     setBallColors(colors);
     const stacks: BallStacks = {};
@@ -111,6 +114,10 @@ export const BallProvider: FunctionComponent = ({ children }) => {
       stacks[uuid()] = { balls: createBallStack(colors) };
     }
     setBallStacks(stacks);
+  };
+
+  useEffect(() => {
+    resetGame();
   }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   const value: BallContextType = {
@@ -120,7 +127,8 @@ export const BallProvider: FunctionComponent = ({ children }) => {
       setActiveBall,
       onDrag,
       onDrop,
-      gameWon
+      gameWon,
+      resetGame
   }
 
   return <BallContext.Provider value={value}>{children}</BallContext.Provider>;
