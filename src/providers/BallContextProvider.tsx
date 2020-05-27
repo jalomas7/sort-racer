@@ -110,7 +110,7 @@ export const BallProvider: FunctionComponent = ({ children }) => {
     ];
     setBallColors(colors);
     const stacks: BallStacks = {};
-    for (let i = 0; i < colors.length; i++) {
+    for (let i = 0; i < colors.length + 1; i++) {
       stacks[uuid()] = { balls: createBallStack(shuffle<string>(colors)) };
     }
     setBallStacks(stacks);
