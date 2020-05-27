@@ -7,6 +7,23 @@ export const getRandomHexColor = (brightness=0): string => {
     return color;
 };
 
+export const getRandomHexColors = (n=1, brightness=0): string[] => {
+    const colors: string[] = [];
+
+    for(let i=0; i < n; i++) {
+        const newColor: string = getRandomHexColor(brightness);
+        if(colors.some(v => v === newColor)) {
+            i--;
+            continue;
+        }
+
+        colors.push(newColor)
+    }
+
+    return colors;
+
+}
+
 export const isDark = (color: string): boolean => {
     if (!color) {
         return false;

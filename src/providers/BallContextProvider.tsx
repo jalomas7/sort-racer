@@ -8,7 +8,7 @@ import React, {
   SetStateAction,
   useCallback,
 } from "react";
-import { getRandomHexColor, shuffle } from "../utils";
+import { getRandomHexColors, shuffle } from "../utils";
 import { v4 as uuid } from "uuid";
 import { BallStacks, Ball } from "../types";
 
@@ -102,12 +102,7 @@ export const BallProvider: FunctionComponent = ({ children }) => {
 
   const resetGame = () => {
     setGameWon(false);
-    const colors: string[] = [
-      getRandomHexColor(2),
-      getRandomHexColor(2),
-      getRandomHexColor(2),
-      getRandomHexColor(2)
-    ];
+    const colors: string[] = getRandomHexColors(4, 2);
     setBallColors(colors);
     const stacks: BallStacks = {};
     for (let i = 0; i < colors.length + 1; i++) {
