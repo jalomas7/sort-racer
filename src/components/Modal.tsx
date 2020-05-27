@@ -9,7 +9,7 @@ export type ModalProps = {
 const ModalContainer = styled.div<ModalProps>`
   height: 100%;
   width: 100%;
-  visibility: ${({ open }) => (open ? "visible" : "none")};
+  visibility: ${({ open }) => (open ? "visible" : "hidden")};
   background-color: ${({ backgroundColor }) => backgroundColor};
   position: absolute;
   z-index: 1;
