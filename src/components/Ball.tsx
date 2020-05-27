@@ -25,8 +25,6 @@ const BallContainer = styled.div<{
   width: 100px;
   height: 100px;
   position: ${({ active }) => (active ? "absolute" : "unset")};
-  left: ${({ x }) => x - 50}px;
-  top: ${({ y }) => y - 50}px;
   pointer-events: ${({ active }) => (active ? "none" : "unset")};
 `;
 
@@ -39,7 +37,7 @@ const Ball: FunctionComponent<BallProps> = ({
   const { activeBall } = useBallContext();
   const isActive: boolean = (activeBall && activeBall.id === id) || false;
 
-  return <BallContainer color={color} active={isActive} x={x} y={y} />;
+  return <BallContainer color={color} active={isActive} x={x} y={y} style={{left: x-50, top: y-50}}/>;
 };
 
 export default Ball;

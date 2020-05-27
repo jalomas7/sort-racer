@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import BallStack from "./components/BallStack";
 import { useBallContext } from "./providers";
 import Ball from "./components/Ball";
-import {GameWon} from './components'
+import { GameWon } from "./components";
 
 const AppContainer = styled.div`
   display: flex;
@@ -20,19 +20,21 @@ const App = () => {
   const [xPos, setXPos] = useState<number>(0);
   const [yPos, setYPos] = useState<number>(0);
 
+  const updateActiveBallPos = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setXPos(e.clientX);
+    setYPos(e.clientY);
+  };
+
   return (
-    <AppContainer
-      onMouseMove={(e) => {
-        e.preventDefault();
-        setXPos(e.clientX);
-        setYPos(e.clientY);
-      }}
-    >
+    <AppContainer onMouseMoveCapture={updateActiveBallPos}>
       <GameWon />
       {Object.keys(ballStacks).map((id) => (
         <BallStack balls={ballStacks[id].balls} key={id} id={id} />
       ))}
-      {activeBall && <Ball x={xPos} y={yPos} color={activeBall.color} id={activeBall.id} />}
+      {activeBall && (
+        <Ball x={xPos} y={yPos} color={activeBall.color} id={activeBall.id} />
+      )}
     </AppContainer>
   );
 };
