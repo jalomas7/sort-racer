@@ -8,7 +8,7 @@ import React, {
   SetStateAction,
   useCallback,
 } from "react";
-import { getRandomHexColor } from "../utils";
+import { getRandomHexColor, shuffle } from "../utils";
 import { v4 as uuid } from "uuid";
 import { BallStacks, Ball } from "../types";
 
@@ -40,8 +40,8 @@ export const useBallContext = () => useContext(BallContext);
 
 const createBallStack = (colors: string[]): Ball[] => {
   const balls: Ball[] = [];
-  for (let i = 0; i < 5; i++) {
-    const color = colors[Math.floor(Math.random() * colors.length)];
+  for (let i = 0; i < colors.length; i++) {
+    const color = colors[i];
     const ball: Ball = {
       id: uuid(),
       color,
@@ -89,11 +89,12 @@ export const BallProvider: FunctionComponent = ({ children }) => {
 
   const onDrop = useCallback(
     (stackId: string) => {
-      if (!activeBall) {
+      const balls = ballStacks[stackId].balls;
+      if (!activeBall || balls.length > 4) {
         return;
       }
 
-      ballStacks[stackId].balls.unshift(activeBall);
+      balls.unshift(activeBall);
       setActiveBall(undefined);
     },
     [ballStacks, activeBall]
@@ -105,13 +106,12 @@ export const BallProvider: FunctionComponent = ({ children }) => {
       getRandomHexColor(2),
       getRandomHexColor(2),
       getRandomHexColor(2),
-      getRandomHexColor(2),
       getRandomHexColor(2)
     ];
     setBallColors(colors);
     const stacks: BallStacks = {};
-    for (let i = 0; i < 5; i++) {
-      stacks[uuid()] = { balls: createBallStack(colors) };
+    for (let i = 0; i < colors.length; i++) {
+      stacks[uuid()] = { balls: createBallStack(shuffle<string>(colors)) };
     }
     setBallStacks(stacks);
   };
