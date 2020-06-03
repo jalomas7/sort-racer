@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { GameWon, Player } from "./components";
-import { BallProvider } from "./providers";
+import { BallProvider, useGameContext } from "./providers";
 
 const AppContainer = styled.div`
   display: flex;
@@ -14,15 +14,16 @@ const AppContainer = styled.div`
 `;
 
 const App = () => {
+  const { players, playerStacks } = useGameContext();
+
   return (
     <AppContainer>
       <GameWon />
-      <BallProvider>
-        <Player />
-      </BallProvider>
-      <BallProvider>
-        <Player />
-      </BallProvider>
+      {players.map((player) => (
+        <BallProvider ballStacks={playerStacks[player]}>
+          <Player playerId={player}/>
+        </BallProvider>
+      ))}
     </AppContainer>
   );
 };

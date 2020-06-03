@@ -1,12 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import * as serviceWorker from "./serviceWorker";
+import {GameContextProvider} from './providers';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <GameContextProvider players={['player 1', 'player 2']}>
+      <App />
+    </GameContextProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

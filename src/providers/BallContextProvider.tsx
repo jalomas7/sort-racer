@@ -2,82 +2,40 @@ import React, {
   createContext,
   useContext,
   FunctionComponent,
-  useEffect,
   useState,
   Dispatch,
   SetStateAction,
   useCallback,
 } from "react";
-import { getRandomHexColors, shuffle } from "../utils";
-import { v4 as uuid } from "uuid";
 import { BallStacks, Ball } from "../types";
 
 export type BallContextType = {
   activeBall: Ball | undefined;
   setActiveBall: Dispatch<SetStateAction<Ball | undefined>>;
-  ballStacks: BallStacks;
-  ballColors: string[];
-  gameWon: boolean;
   onDrag: (stackId: string) => void;
   onDrop: (stackId: string) => void;
-  resetGame: () => void;
 };
 
 const defaultBallContext: BallContextType = {
   activeBall: undefined,
-  gameWon: false,
   setActiveBall: () => {},
-  ballStacks: {},
-  ballColors: [],
   onDrag: () => {},
   onDrop: () => {},
-  resetGame: () => {}
 };
 
 const BallContext = createContext(defaultBallContext);
 
 export const useBallContext = () => useContext(BallContext);
 
-const createBallStack = (colors: string[]): Ball[] => {
-  const balls: Ball[] = [];
-  for (let i = 0; i < colors.length; i++) {
-    const color = colors[i];
-    const ball: Ball = {
-      id: uuid(),
-      color,
-    };
-    balls.push(ball);
-  }
-
-  return balls;
+export type BallProviderProps = {
+  ballStacks: BallStacks;
 };
 
-export const BallProvider: FunctionComponent = ({ children }) => {
+export const BallProvider: FunctionComponent<BallProviderProps> = ({
+  children,
+  ballStacks,
+}) => {
   const [activeBall, setActiveBall] = useState<Ball>();
-  const [ballColors, setBallColors] = useState<string[]>([]);
-  const [ballStacks, setBallStacks] = useState<BallStacks>({});
-  const [gameWon, setGameWon] = useState<boolean>(false);
-
-  useEffect(() => {
-    if(activeBall !== undefined) {
-      return;
-    }
-
-    let won: boolean = true;
-    Object.keys(ballStacks).forEach(id => {
-      if(ballStacks[id].balls.length < 1) {
-        return;
-      }
-      const firstBallColor = ballStacks[id].balls[0].color;
-      ballStacks[id].balls.forEach(ball => {
-        if(ball.color !== firstBallColor) {
-          won = false;
-          return;
-        }
-      });
-    });
-    setGameWon(won)
-  }, [ballStacks, activeBall]);
 
   const onDrag = useCallback(
     (stackId: string) => {
@@ -100,31 +58,12 @@ export const BallProvider: FunctionComponent = ({ children }) => {
     [ballStacks, activeBall]
   );
 
-  const resetGame = () => {
-    setGameWon(false);
-    const colors: string[] = getRandomHexColors(4, 2);
-    setBallColors(colors);
-    const stacks: BallStacks = {};
-    for (let i = 0; i < colors.length + 1; i++) {
-      stacks[uuid()] = { balls: createBallStack(shuffle<string>(colors)) };
-    }
-    setBallStacks(stacks);
-  };
-
-  useEffect(() => {
-    resetGame();
-  }, []); //eslint-disable-line react-hooks/exhaustive-deps
-
   const value: BallContextType = {
-      ballColors,
-      ballStacks,
-      activeBall,
-      setActiveBall,
-      onDrag,
-      onDrop,
-      gameWon,
-      resetGame
-  }
+    activeBall,
+    setActiveBall,
+    onDrag,
+    onDrop,
+  };
 
   return <BallContext.Provider value={value}>{children}</BallContext.Provider>;
 };

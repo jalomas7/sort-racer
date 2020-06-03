@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useBallContext } from "../providers";
+import { useGameContext } from "../providers";
 import Modal from "./Modal";
 import { getRandomHexColor, isDark } from "../utils";
 import styled from "@emotion/styled";
@@ -21,7 +21,7 @@ const GameWonResetButton = styled.button`
 const GameWonHeader = styled.h1``;
 
 const GameWon = () => {
-  const { gameWon, resetGame } = useBallContext();
+  const { gameWon, resetGame } = useGameContext();
   const [color, setColor] = useState("transparent");
 
   useEffect(() => {

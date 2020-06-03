@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, FunctionComponent } from "react";
 import styled from "@emotion/styled";
 import BallStack from "./BallStack";
 import Ball from "./Ball";
-import { useBallContext } from "../providers";
+import { useBallContext, useGameContext } from "../providers";
 
 const PlayerContainer = styled.div`
   display: flex;
@@ -16,8 +16,13 @@ const PlayerContainer = styled.div`
   margin: 0 10px;
 `;
 
-const Player = () => {
-  const { ballStacks, activeBall } = useBallContext();
+export type PlayerProps = {
+  playerId: string;
+};
+
+const Player: FunctionComponent<PlayerProps> = ({ playerId }) => {
+  const { activeBall } = useBallContext();
+  const { playerStacks } = useGameContext();
   const [xPos, setXPos] = useState<number>(0);
   const [yPos, setYPos] = useState<number>(0);
 
@@ -27,10 +32,14 @@ const Player = () => {
     setYPos(e.clientY);
   };
 
+  if(!playerStacks[playerId]) {
+    return <React.Fragment />
+  }
+
   return (
-    <PlayerContainer onMouseMoveCapture={updateActiveBallPos}>
-      {Object.keys(ballStacks).map((id) => (
-        <BallStack balls={ballStacks[id].balls} key={id} id={id} />
+    <PlayerContainer onMouseMoveCapture={updateActiveBallPos} id={playerId}>
+      {Object.keys(playerStacks[playerId]).map((id) => (
+        <BallStack balls={playerStacks[playerId][id].balls} key={id} id={id} />
       ))}
       {activeBall && (
         <Ball x={xPos} y={yPos} color={activeBall.color} id={activeBall.id} />
