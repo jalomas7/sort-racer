@@ -3,13 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import {BallProvider} from './providers';
 
 ReactDOM.render(
   <React.StrictMode>
-    <BallProvider>
-      <App />
-    </BallProvider>
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );

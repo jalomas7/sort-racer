@@ -9,14 +9,13 @@ const BallStackContainer = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  margin: 20px;
+  margin: 0 10px 25% 10px;
   align-self: flex-end;
-  min-width: 120px;
 `;
 
 const BallStackVase = styled.div`
-  min-width: 120px;
-  height: 500px;
+  min-width: 55px;
+  height: 250px;
   border-radius: 10px;
   background-color: rgba(0,0,0,0.2);
   position: absolute;
