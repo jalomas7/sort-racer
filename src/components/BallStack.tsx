@@ -5,6 +5,7 @@ import { Ball } from "../types";
 import { useBallContext } from "../providers";
 
 const BallStackContainer = styled.div`
+  min-width: 55px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,17 +15,17 @@ const BallStackContainer = styled.div`
 `;
 
 const BallStackVase = styled.div`
-  min-width: 55px;
+  width: 100%;
   height: 250px;
   border-radius: 10px;
-  background-color: rgba(0,0,0,0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   position: absolute;
   bottom: 0;
   background: linear-gradient(
     to left,
-    rgba(0,0,0,0.5),
-    rgba(0,0,0,0.4),
-    rgba(0,0,0,0.5)
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.4),
+    rgba(0, 0, 0, 0.5)
   );
 `;
 
