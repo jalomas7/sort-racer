@@ -63,7 +63,6 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({
         }
       });
     });
-    console.log(`player ${playerId} won?`, playerWon);
     if (playerWon) {
       declareWinner(playerId);
       return;

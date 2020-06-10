@@ -21,7 +21,7 @@ const GameWonResetButton = styled.button`
 const GameWonHeader = styled.h1``;
 
 const GameWon = () => {
-  const { gameWon, resetGame } = useGameContext();
+  const { gameWon, resetGame, winner } = useGameContext();
   const [color, setColor] = useState("transparent");
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const GameWon = () => {
   return (
     <Modal open={gameWon} backgroundColor={'rgba(0,0,0,0.8)'}>
       <GameWonContainer background={color}>
-        <GameWonHeader>YOU WIN!!!</GameWonHeader>
+        <GameWonHeader>{winner} wins!!!</GameWonHeader>
         <GameWonResetButton onClick={resetGame}>Play Again</GameWonResetButton>
       </GameWonContainer>
     </Modal>

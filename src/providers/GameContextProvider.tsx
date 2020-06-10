@@ -57,6 +57,7 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
   const [ballColors, setBallColors] = useState<string[]>([]);
   const [playerStacks, setPlayerStacks] = useState<PlayerStacks>({});
   const [gameWon, setGameWon] = useState<boolean>(false);
+  const [winner, setWinner] = useState<string>();
 
   const resetGame = () => {
     setGameWon(false);
@@ -78,13 +79,19 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
     resetGame();
   }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
+  const declareWinner = (winner: string) => {
+    setGameWon(true);
+    setWinner(winner);
+  };
+
   const value: GameContextType = {
     players,
     ballColors,
     playerStacks,
-    declareWinner: () => setGameWon(true),
+    declareWinner,
     gameWon,
     resetGame,
+    winner
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
