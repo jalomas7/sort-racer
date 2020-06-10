@@ -6,8 +6,10 @@ import React, {
   Dispatch,
   SetStateAction,
   useCallback,
+  useMemo,
 } from "react";
-import { BallStacks, Ball } from "../types";
+import { Ball } from "../types";
+import { useGameContext } from "./GameContextProvider";
 
 export type BallContextType = {
   activeBall: Ball | undefined;
@@ -28,34 +30,66 @@ const BallContext = createContext(defaultBallContext);
 export const useBallContext = () => useContext(BallContext);
 
 export type BallProviderProps = {
-  ballStacks: BallStacks;
+  playerId: string;
 };
 
 export const BallProvider: FunctionComponent<BallProviderProps> = ({
   children,
-  ballStacks,
+  playerId,
 }) => {
   const [activeBall, setActiveBall] = useState<Ball>();
+  const { playerStacks, declareWinner } = useGameContext();
+  const ballStack = useMemo(() => playerStacks[playerId], [
+    playerId,
+    playerStacks,
+  ]);
+
+  const checkIfWinner = useCallback(() => {
+    let playerWon: boolean = true;
+
+    if (!ballStack) {
+      return;
+    }
+
+    Object.keys(ballStack).forEach((id) => {
+      if (ballStack[id].balls.length < 1) {
+        return;
+      }
+      const firstBallColor = ballStack[id].balls[0].color;
+      ballStack[id].balls.forEach((ball) => {
+        if (ball.color !== firstBallColor) {
+          playerWon = false;
+          return;
+        }
+      });
+    });
+    console.log(`player ${playerId} won?`, playerWon);
+    if (playerWon) {
+      declareWinner(playerId);
+      return;
+    }
+  }, [ballStack, playerId, declareWinner]);
 
   const onDrag = useCallback(
     (stackId: string) => {
-      const ball = ballStacks[stackId].balls.shift();
+      const ball = playerStacks[playerId][stackId].balls.shift();
       setActiveBall(ball);
     },
-    [ballStacks]
+    [playerStacks[playerId]] //eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const onDrop = useCallback(
     (stackId: string) => {
-      const balls = ballStacks[stackId].balls;
+      const balls = playerStacks[playerId][stackId].balls;
       if (!activeBall || balls.length > 4) {
         return;
       }
 
       balls.unshift(activeBall);
       setActiveBall(undefined);
+      checkIfWinner();
     },
-    [ballStacks, activeBall]
+    [playerStacks[playerId], activeBall] //eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const value: BallContextType = {

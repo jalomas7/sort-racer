@@ -14,6 +14,7 @@ export type GameContextType = {
   playerStacks: PlayerStacks;
   ballColors: string[];
   gameWon: boolean;
+  declareWinner: (winner: string) => void;
   resetGame: () => void;
   winner?: string;
 };
@@ -21,6 +22,7 @@ export type GameContextType = {
 const defaultGameContext: GameContextType = {
   players: [],
   gameWon: false,
+  declareWinner: () => {},
   playerStacks: {},
   ballColors: [],
   resetGame: () => {},
@@ -55,35 +57,6 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
   const [ballColors, setBallColors] = useState<string[]>([]);
   const [playerStacks, setPlayerStacks] = useState<PlayerStacks>({});
   const [gameWon, setGameWon] = useState<boolean>(false);
-  const [winner, setWinner] = useState<string | undefined>();
-
-  useEffect(() => {
-    let won: boolean = true;
-    players.forEach((player) => {
-      const ballStacks = playerStacks[player];
-
-      if (!ballStacks) {
-        return;
-      }
-
-      Object.keys(ballStacks).forEach((id) => {
-        if (ballStacks[id].balls.length < 1) {
-          return;
-        }
-        const firstBallColor = ballStacks[id].balls[0].color;
-        ballStacks[id].balls.forEach((ball) => {
-          if (ball.color !== firstBallColor) {
-            won = false;
-            return;
-          }
-        });
-      });
-      if (won) {
-        setGameWon(true);
-        setWinner(player);
-      }
-    });
-  }, [players, playerStacks]);
 
   const resetGame = () => {
     setGameWon(false);
@@ -109,9 +82,9 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
     players,
     ballColors,
     playerStacks,
+    declareWinner: () => setGameWon(true),
     gameWon,
     resetGame,
-    winner,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

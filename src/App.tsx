@@ -14,13 +14,13 @@ const AppContainer = styled.div`
 `;
 
 const App = () => {
-  const { players, playerStacks } = useGameContext();
+  const { players } = useGameContext();
 
   return (
     <AppContainer>
       <GameWon />
       {players.map((player) => (
-        <BallProvider ballStacks={playerStacks[player]}>
+        <BallProvider playerId={player}>
           <Player playerId={player}/>
         </BallProvider>
       ))}
