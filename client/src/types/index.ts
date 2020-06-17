@@ -1,11 +1,11 @@
 export type PlayerStacks = {
-  [playerId: string]: BallStacks;
+    [playerId: string]: BallStacks;
 };
 
 export type BallStacks = {
-  [id: string]: {
-    balls: Ball[];
-  };
+    [id: string]: {
+        balls: Ball[];
+    };
 };
 
 export type Ball = {
