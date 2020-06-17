@@ -4,7 +4,7 @@ const wss = new WebSocket.Server({port: 8080, host: 'localhost'});
 
 console.log('server running at localhost:8080');
 
-wss.on('connection', function connection(ws) {
+wss.on('connection', (ws) => {
     console.log('connection recieved');
     ws.on('message', function incoming(message) {
         console.log('received: %s', message);
@@ -17,11 +17,33 @@ wss.on('connection', function connection(ws) {
     ws.send('something');
 });
 
-wss.on('message', function incoming(data) {
+wss.on('message', (data) => {
     console.log(data);
 });
 
 wss.on('close', () => {
-    wss.emit('closed');
     console.log('server closed');
+});
+
+process.on('SIGINT', () => {
+    let closeAttempts = 0;
+    const closeCb = (e?: Error) => {
+        console.log('Closing server connections');
+        
+        for(let client of wss.clients) {
+            client.close();
+        }
+
+        if (!e || closeAttempts > 4) {
+            if (closeAttempts > 4) {
+                console.log('Force closing');
+            }
+            process.exit();
+        } else {
+            closeAttempts++;
+            wss.close(closeCb);
+        }
+    };
+
+    wss.close(closeCb);
 });

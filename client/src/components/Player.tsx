@@ -32,12 +32,12 @@ const Player: FunctionComponent<PlayerProps> = ({playerId}) => {
         thisWs.addEventListener('open', () => {
             setWs(thisWs);
         });
-        thisWs.addEventListener('close', () => {
-            thisWs.close();
-        });
         thisWs.addEventListener('message', (ev) => {
             console.log(ev);
         });
+        thisWs.addEventListener('close', () => {
+            console.log('%s connection closed', playerId);
+        })
 
         return () => {
             if (ws) {
@@ -51,7 +51,7 @@ const Player: FunctionComponent<PlayerProps> = ({playerId}) => {
         e.preventDefault();
         setXPos(e.clientX);
         setYPos(e.clientY);
-        if (ws && ws.OPEN) {
+        if (ws && ws.readyState === ws.OPEN) {
             ws.send(
                 JSON.stringify({
                     [playerId]: {xPos: e.clientX, yPos: e.clientY},
