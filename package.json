@@ -1,5 +1,14 @@
 {
     "name": "sort-racer",
     "private": true,
-    "workspaces": ["client", "server"]
+    "workspaces": [
+        "client",
+        "server"
+    ],
+    "dependencies": {
+        "ws": "^7.3.0"
+    },
+    "devDependencies": {
+        "@types/ws": "^7.2.5"
+    }
 }
