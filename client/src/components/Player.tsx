@@ -28,11 +28,21 @@ const Player: FunctionComponent<PlayerProps> = ({ playerId }) => {
   const [ws, setWs] = useState<WebSocket>();
 
   useEffect(() => {
-    setWs(new WebSocket("ws://localhost:8080"));
+    const thisWs = new WebSocket("ws://localhost:8080");
+    thisWs.addEventListener("open", () => {
+      setWs(thisWs);
+    });
+    thisWs.addEventListener("close", () => {
+      thisWs.close();
+    });
+    thisWs.addEventListener('message', ev => {
+      console.log(ev);
+    });
 
     return () => {
       if (ws) {
         ws.close();
+        setWs(undefined);
       }
     };
   }, []); //eslint-disable-line react-hooks/exhaustive-deps
@@ -41,7 +51,7 @@ const Player: FunctionComponent<PlayerProps> = ({ playerId }) => {
     e.preventDefault();
     setXPos(e.clientX);
     setYPos(e.clientY);
-    if (ws) {
+    if (ws && ws.OPEN) {
       ws.send(
         JSON.stringify({
           [playerId]: { xPos: e.clientX, yPos: e.clientY },

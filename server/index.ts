@@ -22,5 +22,6 @@ wss.on("message", function incoming(data) {
 });
 
 wss.on('close', () => {
+    wss.emit('closed');
     console.log('server closed');
 });
