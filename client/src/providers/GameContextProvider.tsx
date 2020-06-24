@@ -2,6 +2,7 @@ import React, {createContext, useContext, FunctionComponent, useEffect, useState
 import {getRandomHexColors, shuffle} from '../utils';
 import {v4 as uuid} from 'uuid';
 import {Ball, PlayerStacks} from '../types';
+import {WSEvent, WSEventName} from '@common/types';
 
 export type GameContextType = {
     players: string[];
@@ -20,15 +21,6 @@ export type PlayerPositions = {
         x: number;
         y: number;
     };
-};
-
-export enum WSEventName {
-    POSITION_UPDATE = 'positionUpdate',
-}
-
-export type WSEvent<T> = {
-    event: WSEventName;
-    data: T;
 };
 
 const defaultGameContext: GameContextType = {
@@ -78,6 +70,7 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
         const thisWs = new WebSocket('ws://localhost:8080');
         thisWs.addEventListener('open', () => {
             setWs(thisWs);
+            thisWs.send(JSON.stringify({event: WSEventName.CONNECTED, data: {players}}));
         });
         thisWs.addEventListener('message', (ev) => {
             try {

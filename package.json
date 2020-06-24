@@ -3,7 +3,8 @@
     "private": true,
     "workspaces": [
         "client",
-        "server"
+        "server",
+        "common"
     ],
     "dependencies": {
         "ws": "^7.3.0"

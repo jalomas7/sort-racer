@@ -1,6 +1,10 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "module": "esnext"
-  }
+    "extends": "../tsconfig.base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "module": "esnext",
+        "paths": {
+            "@common/*": ["../common/*"]
+        }
+    }
 }
