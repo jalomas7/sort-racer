@@ -12,7 +12,7 @@ export type GameContextType = {
     resetGame: () => void;
     winner?: string;
     updatePlayerPosition: (id: string, x: number, y: number) => void;
-    getPlayerPosition: (id: string) => {x: number, y: number};
+    getPlayerPosition: (id: string) => {x: number; y: number};
 };
 
 export type PlayerPositions = {
@@ -20,6 +20,15 @@ export type PlayerPositions = {
         x: number;
         y: number;
     };
+};
+
+export enum WSEventName {
+    POSITION_UPDATE = 'positionUpdate',
+}
+
+export type WSEvent<T> = {
+    event: WSEventName;
+    data: T;
 };
 
 const defaultGameContext: GameContextType = {
@@ -30,7 +39,7 @@ const defaultGameContext: GameContextType = {
     ballColors: [],
     resetGame: () => {},
     updatePlayerPosition: () => {},
-    getPlayerPosition: () => ({x: 0, y: 0})
+    getPlayerPosition: () => ({x: 0, y: 0}),
 };
 
 const GameContext = createContext(defaultGameContext);
@@ -61,7 +70,9 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
     const [gameWon, setGameWon] = useState<boolean>(false);
     const [winner, setWinner] = useState<string>();
     const [ws, setWs] = useState<WebSocket>();
-    const [playerPositions, setPlayerPositions] = useState<PlayerPositions>(players.reduce((acc, c) => ({...acc, [c]: {}}), {}));
+    const [playerPositions, setPlayerPositions] = useState<PlayerPositions>(
+        players.reduce((acc, c) => ({...acc, [c]: {}}), {}),
+    );
 
     useEffect(() => {
         const thisWs = new WebSocket('ws://localhost:8080');
@@ -69,7 +80,19 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
             setWs(thisWs);
         });
         thisWs.addEventListener('message', (ev) => {
-            console.log(ev);
+            try {
+                const data: WSEvent<PlayerPositions> = JSON.parse(ev.data);
+                switch (data.event) {
+                    case WSEventName.POSITION_UPDATE:
+                        Object.keys(data.data).forEach((k) => {
+                            const {x, y} = data.data[k];
+                            setPlayerPositions((p) => ({...p, [k]: {x, y}}));
+                        });
+                        break;
+                }
+            } catch {
+                console.log('not json data');
+            }
         });
         thisWs.addEventListener('close', () => {
             console.log('connection closed');
@@ -84,11 +107,14 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
     }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
     const updatePlayerPosition = (playerId: string, x: number, y: number) => {
-        setPlayerPositions(p => ({...p, [playerId]: {x, y}}));
+        setPlayerPositions((p) => ({...p, [playerId]: {x, y}}));
         if (ws && ws.readyState === ws.OPEN) {
             ws.send(
                 JSON.stringify({
-                    [playerId]: {xPos: x, yPos: y},
+                    event: WSEventName.POSITION_UPDATE,
+                    data: {
+                        [playerId]: {x, y},
+                    },
                 }),
             );
         }
@@ -130,7 +156,7 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
         resetGame,
         winner,
         updatePlayerPosition,
-        getPlayerPosition
+        getPlayerPosition,
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

@@ -6,8 +6,13 @@ console.log('server running at localhost:8080');
 
 wss.on('connection', (ws) => {
     console.log('connection recieved');
-    ws.on('message', function incoming(message) {
+    ws.on('message', message => {
         console.log('received: %s', message);
+        wss.clients.forEach(c => {
+            if(c !== ws) {
+                c.send(message);
+            }
+        })
     });
 
     ws.on('close', () => {
@@ -15,10 +20,6 @@ wss.on('connection', (ws) => {
     });
 
     ws.send('something');
-});
-
-wss.on('message', (data) => {
-    console.log(data);
 });
 
 wss.on('close', () => {
