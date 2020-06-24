@@ -1,4 +1,4 @@
-import React, {useState, FunctionComponent, useEffect} from 'react';
+import React, {FunctionComponent} from 'react';
 import styled from '@emotion/styled';
 import BallStack from './BallStack';
 import Ball from './Ball';
@@ -22,54 +22,25 @@ export type PlayerProps = {
 
 const Player: FunctionComponent<PlayerProps> = ({playerId}) => {
     const {activeBall} = useBallContext();
-    const {playerStacks} = useGameContext();
-    const [xPos, setXPos] = useState<number>(0);
-    const [yPos, setYPos] = useState<number>(0);
-    const [ws, setWs] = useState<WebSocket>();
-
-    useEffect(() => {
-        const thisWs = new WebSocket('ws://localhost:8080');
-        thisWs.addEventListener('open', () => {
-            setWs(thisWs);
-        });
-        thisWs.addEventListener('message', (ev) => {
-            console.log(ev);
-        });
-        thisWs.addEventListener('close', () => {
-            console.log('%s connection closed', playerId);
-        })
-
-        return () => {
-            if (ws) {
-                ws.close();
-                setWs(undefined);
-            }
-        };
-    }, []); //eslint-disable-line react-hooks/exhaustive-deps
+    const {playerStacks, updatePlayerPosition, getPlayerPosition} = useGameContext();
 
     const updateActiveBallPos = (e: React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
-        setXPos(e.clientX);
-        setYPos(e.clientY);
-        if (ws && ws.readyState === ws.OPEN) {
-            ws.send(
-                JSON.stringify({
-                    [playerId]: {xPos: e.clientX, yPos: e.clientY},
-                }),
-            );
-        }
+        updatePlayerPosition(playerId, e.clientX, e.clientY);
     };
 
     if (!playerStacks[playerId]) {
         return <React.Fragment />;
     }
 
+    const {x, y} = getPlayerPosition(playerId);
+
     return (
         <PlayerContainer onMouseMoveCapture={updateActiveBallPos} id={playerId}>
             {Object.keys(playerStacks[playerId]).map((id) => (
                 <BallStack balls={playerStacks[playerId][id].balls} key={id} id={id} />
             ))}
-            {activeBall && <Ball x={xPos} y={yPos} color={activeBall.color} id={activeBall.id} />}
+            {activeBall && <Ball x={x} y={y} color={activeBall.color} id={activeBall.id} />}
         </PlayerContainer>
     );
 };
