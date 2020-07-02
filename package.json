@@ -3,13 +3,22 @@
     "private": true,
     "workspaces": [
         "client",
-        "server",
-        "common"
+        "server/*",
+        "packages/*"
     ],
     "dependencies": {
         "ws": "^7.3.0"
     },
     "devDependencies": {
-        "@types/ws": "^7.2.5"
+        "@types/ws": "^7.2.5",
+        "lerna": "^3.22.1"
+    },
+    "scripts": {
+        "build": "lerna run --scope '@packages/*' build ",
+        "build:clean": "lerna run --scope '@packages/*' build ",
+        "start:client": "lerna run start --scope 'client'",
+        "start:server": "lerna run start --scope 'server/*'",
+        "build:client": "lerna run build --scope 'client/*'",
+        "build:server": "lerna run build --scope 'server/*'"
     }
 }

@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.base",
+    "compilerOptions": {
+        "declarationMap": true,
+        "composite": true,
+        "paths": {
+            "@packages/*": ["packages/*"]
+        }
+    }
+}

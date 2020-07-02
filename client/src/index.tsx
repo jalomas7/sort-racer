@@ -7,7 +7,6 @@ import * as serviceWorker from './serviceWorker';
 import {GameContextProvider} from './providers';
 
 const basePath = process.env.REACT_APP_BASE_PATH || '/';
-console.log(basePath);
 
 ReactDOM.render(
     <React.StrictMode>

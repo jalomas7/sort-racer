@@ -1,10 +1,12 @@
 {
     "extends": "../tsconfig.base.json",
     "compilerOptions": {
-        "baseUrl": ".",
+        "jsx": "preserve",
         "module": "esnext",
-        "paths": {
-            "@common/*": ["../common/*"]
-        }
-    }
+        "noEmit": true,
+        "declaration": false,
+        "isolatedModules": true,
+        "allowJs": true
+    },
+    "include": ["src"]
 }

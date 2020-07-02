@@ -2,7 +2,7 @@ import React, {createContext, useContext, FunctionComponent, useEffect, useState
 import {getRandomHexColors, shuffle} from '../utils';
 import {v4 as uuid} from 'uuid';
 import {Ball, PlayerStacks} from '../types';
-import {WSEvent, WSEventName} from '@common/types';
+import {WSEvent, WSEventName} from '@packages/common';
 
 export type GameContextType = {
     players: string[];
