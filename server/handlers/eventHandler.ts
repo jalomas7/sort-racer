@@ -2,12 +2,14 @@ import {WSEvent, WSEventName} from '@packages/common';
 import WebSocket from 'ws';
 import {echoHandler} from './echoHandler';
 import {HandlerRegistry} from './types';
+import { connectedHandler } from './connectedHandler';
 
 const handlers: HandlerRegistry = {
-    [WSEventName.CONNECTED]: echoHandler,
+    [WSEventName.CONNECTED]: connectedHandler,
     [WSEventName.POSITION_UPDATE]: echoHandler,
 };
 
 export const handleEvent = <T>(ws: WebSocket, event: WSEvent<T>) => {
-    handlers[event.event](ws, event);
+    const handler = handlers[event.event];
+    return handler && handler(ws, event);
 };

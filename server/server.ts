@@ -1,7 +1,9 @@
 import WebSocket from 'ws';
 import {handleEvent} from './handlers';
+import { updatePlayers } from './utils/updatePlayers';
 
 export const Server = new WebSocket.Server({port: 8080, host: 'localhost'});
+export const Players: Map<WebSocket, string> = new Map();
 
 console.log('server running at localhost:8080');
 
@@ -18,10 +20,10 @@ Server.on('connection', (ws) => {
     });
 
     ws.on('close', () => {
+        Players.delete(ws);
+        updatePlayers();
         console.log('connection closed');
     });
-
-    ws.send('something');
 });
 
 Server.on('close', () => {

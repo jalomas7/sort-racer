@@ -13,7 +13,7 @@ ReactDOM.render(
         <BrowserRouter basename={basePath}>
             <Switch>
                 <Route exact path="/">
-                    <GameContextProvider players={['player 1', 'player 2']}>
+                    <GameContextProvider>
                         <App />
                     </GameContextProvider>
                 </Route>
