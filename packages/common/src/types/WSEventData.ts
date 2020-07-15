@@ -1,6 +1,6 @@
 export type ConnectedEventData = {
     players: string[];
-}
+};
 
 export type PlayerPositionsEventData = {
     [playerId: string]: {
@@ -9,7 +9,13 @@ export type PlayerPositionsEventData = {
     };
 };
 
-export type ColumnSwapEventData = {
-    from: string;
-    to: string;
+export enum PlayerStackUpdateTypes {
+    ADD = 'add',
+    REMOVE = 'remove',
+}
+
+export type PlayerStackUpdate = {
+    playerId: string;
+    stackId: string;
+    type: PlayerStackUpdateTypes;
 };

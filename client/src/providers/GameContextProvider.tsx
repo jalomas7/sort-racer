@@ -14,6 +14,7 @@ export type GameContextType = {
     winner?: string;
     updatePlayerPosition: (id: string, x: number, y: number) => void;
     getPlayerPosition: (id: string) => {x: number; y: number};
+    serverConnection: WebSocket | undefined;
 };
 
 const defaultGameContext: GameContextType = {
@@ -25,6 +26,7 @@ const defaultGameContext: GameContextType = {
     resetGame: () => {},
     updatePlayerPosition: () => {},
     getPlayerPosition: () => ({x: 0, y: 0}),
+    serverConnection: undefined
 };
 
 const GameContext = createContext(defaultGameContext);
@@ -61,7 +63,6 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
     useEffect(() => {
         const thisWs = new WebSocket('ws://localhost:8080');
         thisWs.addEventListener('open', () => {
-            setWs(thisWs);
             thisWs.send(JSON.stringify({event: WSEventName.CONNECTED, data: {players}}));
         });
         thisWs.addEventListener('message', (ev) => {
@@ -85,6 +86,8 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
         thisWs.addEventListener('close', () => {
             console.log('connection closed');
         });
+
+        setWs(thisWs);
 
         return () => {
             if (ws) {
@@ -149,6 +152,7 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
         winner,
         updatePlayerPosition,
         getPlayerPosition,
+        serverConnection: ws
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
