@@ -1,8 +1,8 @@
 import React, {FunctionComponent} from 'react';
 import BallComponent from './Ball';
 import styled from '@emotion/styled';
-import {Ball} from '../types';
 import {useBallContext} from '../providers';
+import { Ball } from '@packages/common';
 
 const BallStackContainer = styled.div`
     min-width: 55px;

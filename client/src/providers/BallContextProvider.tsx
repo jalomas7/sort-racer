@@ -9,9 +9,8 @@ import React, {
     useMemo,
     useEffect,
 } from 'react';
-import {Ball} from '../types';
 import {useGameContext} from './GameContextProvider';
-import {WSEventName, PlayerStackUpdateTypes} from '@packages/common';
+import {WSEventName, PlayerStackUpdateTypes, Ball} from '@packages/common';
 import {WSEvent} from '@packages/common';
 import {PlayerStackUpdate} from '@packages/common';
 
@@ -41,10 +40,6 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children, th
     const [activeBall, setActiveBall] = useState<Ball>();
     const {playerStacks, declareWinner, serverConnection} = useGameContext();
     const ballStack = useMemo(() => playerStacks[thisPlayerId], [thisPlayerId, playerStacks]);
-
-    useEffect(() => {
-        console.log(playerStacks);
-    }, [playerStacks]);
 
     const checkIfWinner = useCallback(() => {
         let playerWon: boolean = true;
@@ -100,6 +95,7 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children, th
                 switch (data.event) {
                     case WSEventName.UPDATE_COLUMNS:
                         const {type, playerId, stackId} = (data as WSEvent<PlayerStackUpdate>).data;
+                            console.log('got here with', data.data);
                         if (type === PlayerStackUpdateTypes.ADD) {
                             pickUpBall(stackId, playerId);
                         } else {

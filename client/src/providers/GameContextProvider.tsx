@@ -1,8 +1,6 @@
 import React, {createContext, useContext, FunctionComponent, useEffect, useState} from 'react';
-import {getRandomHexColors, shuffle} from '../utils';
 import {v4 as uuid} from 'uuid';
-import {Ball, PlayerStacks} from '../types';
-import {WSEvent, WSEventName, PlayerPositionsEventData} from '@packages/common';
+import {WSEvent, WSEventName, PlayerPositionsEventData, PlayerStacks, CreatePlayerStackData} from '@packages/common';
 
 export type GameContextType = {
     players: string[];
@@ -26,26 +24,12 @@ const defaultGameContext: GameContextType = {
     resetGame: () => {},
     updatePlayerPosition: () => {},
     getPlayerPosition: () => ({x: 0, y: 0}),
-    serverConnection: undefined
+    serverConnection: undefined,
 };
 
 const GameContext = createContext(defaultGameContext);
 
 export const useGameContext = () => useContext(GameContext);
-
-const createBallStack = (colors: string[]): Ball[] => {
-    const balls: Ball[] = [];
-    for (let i = 0; i < colors.length; i++) {
-        const color = colors[i];
-        const ball: Ball = {
-            id: uuid(),
-            color,
-        };
-        balls.push(ball);
-    }
-
-    return balls;
-};
 
 export type GameContextProviderProps = {};
 
@@ -55,15 +39,19 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
     const [gameWon, setGameWon] = useState<boolean>(false);
     const [winner, setWinner] = useState<string>();
     const [ws, setWs] = useState<WebSocket>();
-    const [players, setPlayers] = useState<string[]>([uuid()]);
+    const [players, setPlayers] = useState<string[]>([]);
     const [playerPositions, setPlayerPositions] = useState<PlayerPositionsEventData>(
-        players.reduce((acc, c) => ({...acc, [c]: {}}), {}),
+        players.reduce((acc, c) => ({...acc, [c]: {x: 0, y: 0}}), {}),
     );
+
+    useEffect(() => {
+        setPlayerPositions(players.reduce((acc, c) => ({...acc, [c]: {x: 0, y: 0}}), {}));
+    }, [players]);
 
     useEffect(() => {
         const thisWs = new WebSocket('ws://localhost:8080');
         thisWs.addEventListener('open', () => {
-            thisWs.send(JSON.stringify({event: WSEventName.CONNECTED, data: {players}}));
+            thisWs.send(JSON.stringify({event: WSEventName.CONNECTED, data: {player: uuid()}}));
         });
         thisWs.addEventListener('message', (ev) => {
             try {
@@ -78,6 +66,10 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
                     case WSEventName.GET_PLAYERS:
                         setPlayers((data as WSEvent<{players: string[]}>).data.players);
                         break;
+                    case WSEventName.CREATE_PLAYER_STACK:
+                        const {stacks, colors} = (data as WSEvent<CreatePlayerStackData>).data;
+                        setPlayerStacks(stacks);
+                        setBallColors(colors);
                 }
             } catch {
                 console.log('not json data');
@@ -111,31 +103,24 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
         }
     };
 
-    const getPlayerPosition = (playerId: string) => playerPositions[playerId];
+    const getPlayerPosition = (playerId: string) => playerPositions[playerId] || ({x: 0, y: 0});
 
     const resetGame = () => {
         setGameWon(false);
-        const colors: string[] = getRandomHexColors(4, 2);
-        setBallColors(colors);
-        const stacks: PlayerStacks = {};
-        players.forEach((player) => {
-            for (let i = 0; i < colors.length + 1; i++) {
-                stacks[player] = {
-                    ...stacks[player],
-                    [uuid()]: {balls: createBallStack(shuffle<string>(colors))},
-                };
-            }
-        });
-        setPlayerStacks(stacks);
+        ws?.send(JSON.stringify({event: WSEventName.CONNECTED, data: {players}}));
+        // const colors: string[] = getRandomHexColors(4, 2);
+        // setBallColors(colors);
+        // const stacks: PlayerStacks = {};
+        // players.forEach((player) => {
+        //     for (let i = 0; i < colors.length + 1; i++) {
+        //         stacks[player] = {
+        //             ...stacks[player],
+        //             [uuid()]: {balls: createBallStack(shuffle<string>(colors))},
+        //         };
+        //     }
+        // });
+        // setPlayerStacks(stacks);
     };
-
-    useEffect(() => {
-        setPlayerPositions(players.reduce((acc, c) => ({...acc, [c]: {}}), {}));
-    }, [players]);
-
-    useEffect(() => {
-        resetGame();
-    }, [players]); //eslint-disable-line react-hooks/exhaustive-deps
 
     const declareWinner = (winner: string) => {
         setGameWon(true);
@@ -152,7 +137,7 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
         winner,
         updatePlayerPosition,
         getPlayerPosition,
-        serverConnection: ws
+        serverConnection: ws,
     };
 
     return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

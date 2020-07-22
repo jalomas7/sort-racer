@@ -1,6 +1,12 @@
+import { PlayerStacks } from './Stacks';
+
 export type ConnectedEventData = {
-    players: string[];
+    player: string;
 };
+
+export type GetPlayersEventData = {
+    players: string[];
+}
 
 export type PlayerPositionsEventData = {
     [playerId: string]: {
@@ -19,3 +25,8 @@ export type PlayerStackUpdate = {
     stackId: string;
     type: PlayerStackUpdateTypes;
 };
+
+export type CreatePlayerStackData = {
+    stacks: PlayerStacks;
+    colors: string[];
+}
