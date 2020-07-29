@@ -17,8 +17,8 @@ const BallContainer = styled.div<{
     x: number;
     y: number;
 }>`
-    left: ${({x}) => x * window.innerWidth - 25}px;
-    top: ${({y}) => y * window.innerHeight - 25}px;
+    left: ${({x}) => x - 25}px;
+    top: ${({y}) => y - 25}px;
     border-radius: 100%;
     background: radial-gradient(circle at 25px 10px, ${({color}) => color}, #000);
     min-width: 50px;

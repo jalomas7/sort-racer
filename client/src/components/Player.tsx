@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useMemo} from 'react';
+import React, {FunctionComponent, useMemo, useRef} from 'react';
 import styled from '@emotion/styled';
 import BallStack from './BallStack';
 import Ball from './Ball';
@@ -14,6 +14,7 @@ const PlayerContainer = styled.div`
     color: white;
     border: 5px solid white;
     margin: 0 10px;
+    position: relative;
 `;
 
 export type PlayerProps = {
@@ -24,10 +25,16 @@ const Player: FunctionComponent<PlayerProps> = ({playerId}) => {
     const {activeBalls} = useBallContext();
     const {playerStacks, updatePlayerPosition, getPlayerPosition} = useGameContext();
     const activeBall = useMemo(() => activeBalls[playerId], [playerId, activeBalls]);
+    const ref = useRef<HTMLDivElement>(null);
 
     const updateActiveBallPos = (e: React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
-        updatePlayerPosition(playerId, e.clientX / window.innerWidth, e.clientY / window.innerHeight);
+        if(!ref.current) {
+            return;
+        }
+
+        console.log(e.clientY, ref.current.offsetTop);
+        updatePlayerPosition(playerId, e.clientX - ref.current.offsetLeft, e.clientY - ref.current.offsetTop);
     };
 
     if (!playerStacks[playerId]) {
@@ -37,7 +44,7 @@ const Player: FunctionComponent<PlayerProps> = ({playerId}) => {
     const {x, y} = getPlayerPosition(playerId);
 
     return (
-        <PlayerContainer onMouseMoveCapture={updateActiveBallPos} id={playerId}>
+        <PlayerContainer ref={ref} onMouseMoveCapture={updateActiveBallPos} id={playerId}>
             {Object.keys(playerStacks[playerId]).map((id) => (
                 <BallStack balls={playerStacks[playerId][id].balls} key={id} playerId={playerId} stackId={id} />
             ))}
