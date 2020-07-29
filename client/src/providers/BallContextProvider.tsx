@@ -12,6 +12,7 @@ import {useGameContext} from './GameContextProvider';
 import {WSEventName, PlayerStackUpdateTypes, Ball} from '@packages/common';
 import {WSEvent} from '@packages/common';
 import {PlayerStackUpdate} from '@packages/common';
+import {BallStack} from '../components';
 
 export type BallContextType = {
     activeBall: Ball | undefined;
@@ -60,14 +61,15 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
         });
     }, [playerStacks, declareWinner]);
 
-
     const pickUpBall = useCallback(
         (stackId: string, playerId: string) => {
-            console.log('calling with ', playerStacks[playerId][stackId].balls);
+            if (activeBall || BallStack.length < 1) {
+                return;
+            }
             const ball = playerStacks[playerId][stackId].balls.shift();
             setActiveBall(ball);
         },
-        [playerStacks],
+        [playerStacks, activeBall],
     );
 
     const dropBall = useCallback(
@@ -98,7 +100,7 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
                 } as WSEvent<PlayerStackUpdate>),
             );
         },
-        [pickUpBall, serverConnection]
+        [pickUpBall, serverConnection],
     );
 
     const onDrop = useCallback(
@@ -129,19 +131,19 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
                 switch (data.event) {
                     case WSEventName.UPDATE_COLUMNS:
                         const {type, playerId, stackId} = (data as WSEvent<PlayerStackUpdate>).data;
-                        console.log('got here with ', type, playerId, stackId, playerStacks);
                         if (type === PlayerStackUpdateTypes.ADD) {
                             dropBall(stackId, playerId);
                         } else {
                             pickUpBall(stackId, playerId);
                         }
                 }
-            } catch (error){
-                console.log('error updating stack')
+            } catch (error) {
+                console.log('error updating stack');
                 console.log(error);
             }
         };
 
+        // TODO: this gets triggered twice for the receiving client, fix
         serverConnection.addEventListener('message', stackUpdate);
 
         return () => serverConnection.removeEventListener('message', stackUpdate);
