@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useMemo} from 'react';
 import styled from '@emotion/styled';
 import BallStack from './BallStack';
 import Ball from './Ball';
@@ -21,12 +21,13 @@ export type PlayerProps = {
 };
 
 const Player: FunctionComponent<PlayerProps> = ({playerId}) => {
-    const {activeBall} = useBallContext();
+    const {activeBalls} = useBallContext();
     const {playerStacks, updatePlayerPosition, getPlayerPosition} = useGameContext();
+    const activeBall = useMemo(() => activeBalls[playerId], [playerId, activeBalls]);
 
     const updateActiveBallPos = (e: React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
-        updatePlayerPosition(playerId, e.clientX, e.clientY);
+        updatePlayerPosition(playerId, e.clientX / window.innerWidth, e.clientY / window.innerHeight);
     };
 
     if (!playerStacks[playerId]) {
@@ -40,7 +41,7 @@ const Player: FunctionComponent<PlayerProps> = ({playerId}) => {
             {Object.keys(playerStacks[playerId]).map((id) => (
                 <BallStack balls={playerStacks[playerId][id].balls} key={id} playerId={playerId} stackId={id} />
             ))}
-            {activeBall && <Ball x={x} y={y} color={activeBall.color} id={activeBall.id} />}
+            {activeBall && <Ball x={x} y={y} color={activeBall.color} id={activeBall.id} playerId={playerId}/>}
         </PlayerContainer>
     );
 };

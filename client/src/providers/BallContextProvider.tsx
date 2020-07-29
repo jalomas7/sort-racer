@@ -14,16 +14,20 @@ import {WSEvent} from '@packages/common';
 import {PlayerStackUpdate} from '@packages/common';
 import {BallStack} from '../components';
 
+type ActiveBallsMap = {
+    [playerId: string]: Ball | undefined;
+};
+
 export type BallContextType = {
-    activeBall: Ball | undefined;
-    setActiveBall: Dispatch<SetStateAction<Ball | undefined>>;
+    activeBalls: ActiveBallsMap;
+    setActiveBalls: Dispatch<SetStateAction<ActiveBallsMap>>;
     onDrag: (playerId: string, stackId: string) => void;
     onDrop: (playerId: string, stackId: string) => void;
 };
 
 const defaultBallContext: BallContextType = {
-    activeBall: undefined,
-    setActiveBall: () => {},
+    activeBalls: {},
+    setActiveBalls: () => {},
     onDrag: () => {},
     onDrop: () => {},
 };
@@ -35,7 +39,7 @@ export const useBallContext = () => useContext(BallContext);
 export type BallProviderProps = {};
 
 export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) => {
-    const [activeBall, setActiveBall] = useState<Ball>();
+    const [activeBalls, setActiveBalls] = useState<ActiveBallsMap>({});
     const {playerStacks, declareWinner, serverConnection} = useGameContext();
 
     const checkIfWinner = useCallback(() => {
@@ -63,27 +67,28 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
 
     const pickUpBall = useCallback(
         (stackId: string, playerId: string) => {
-            if (activeBall || BallStack.length < 1) {
+            if (activeBalls[playerId] || BallStack.length < 1) {
                 return;
             }
             const ball = playerStacks[playerId][stackId].balls.shift();
-            setActiveBall(ball);
+            setActiveBalls({...activeBalls, [playerId]: ball});
         },
-        [playerStacks, activeBall],
+        [playerStacks, activeBalls],
     );
 
     const dropBall = useCallback(
         (stackId: string, playerId: string) => {
             const balls = playerStacks[playerId][stackId].balls;
-            if (!activeBall || balls.length > 4) {
+            const activeBall = activeBalls[playerId]
+            if (!activeBall|| balls.length > 4) {
                 return;
             }
 
             balls.unshift(activeBall);
-            setActiveBall(undefined);
+            setActiveBalls({...activeBalls, [playerId]: undefined});
             checkIfWinner();
         },
-        [playerStacks, activeBall, checkIfWinner],
+        [playerStacks, activeBalls, checkIfWinner],
     );
 
     const onDrag = useCallback(
@@ -150,8 +155,8 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
     }, [serverConnection, pickUpBall, dropBall]); //eslint-disable-line
 
     const value: BallContextType = {
-        activeBall,
-        setActiveBall,
+        activeBalls,
+        setActiveBalls,
         onDrag,
         onDrop,
     };

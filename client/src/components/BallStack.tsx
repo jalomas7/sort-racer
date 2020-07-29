@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useMemo} from 'react';
 import BallComponent from './Ball';
 import styled from '@emotion/styled';
 import {useBallContext} from '../providers';
@@ -31,7 +31,9 @@ export type BallStackProps = {
 };
 
 const BallStack: FunctionComponent<BallStackProps> = ({balls, playerId, stackId}) => {
-    const {onDrag, onDrop, activeBall} = useBallContext();
+    const {onDrag, onDrop, activeBalls} = useBallContext();
+
+    const activeBall = useMemo(() => activeBalls[playerId], [playerId, activeBalls]);
 
     return (
         <BallStackContainer
@@ -43,7 +45,7 @@ const BallStack: FunctionComponent<BallStackProps> = ({balls, playerId, stackId}
         >
             <BallStackVase />
             {balls.map(({color, id}) => (
-                <BallComponent color={color} key={id} id={id} />
+                <BallComponent color={color} key={id} id={id} playerId={playerId} />
             ))}
         </BallStackContainer>
     );

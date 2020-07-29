@@ -5,6 +5,7 @@ import {useBallContext} from '../providers';
 
 export type BallProps = {
     id: string;
+    playerId: string;
     color?: string;
     x?: number;
     y?: number;
@@ -16,8 +17,8 @@ const BallContainer = styled.div<{
     x: number;
     y: number;
 }>`
-    left: ${({x}) => x - 25}px;
-    top: ${({y}) => y - 25}px;
+    left: ${({x}) => x * window.innerWidth - 25}px;
+    top: ${({y}) => y * window.innerHeight - 25}px;
     border-radius: 100%;
     background: radial-gradient(circle at 25px 10px, ${({color}) => color}, #000);
     min-width: 50px;
@@ -26,9 +27,9 @@ const BallContainer = styled.div<{
     pointer-events: ${({active}) => (active ? 'none' : 'unset')};
 `;
 
-const Ball: FunctionComponent<BallProps> = ({id, color = getRandomHexColor(), x = 0, y = 0}) => {
-    const {activeBall} = useBallContext();
-    const isActive: boolean = (activeBall && activeBall.id === id) || false;
+const Ball: FunctionComponent<BallProps> = ({id, playerId, color = getRandomHexColor(), x = 0, y = 0}) => {
+    const {activeBalls} = useBallContext();
+    const isActive: boolean = activeBalls[playerId]?.id === id || false;
 
     return <BallContainer color={color} active={isActive} x={x} y={y} />;
 };
