@@ -33,7 +33,6 @@ const Player: FunctionComponent<PlayerProps> = ({playerId}) => {
             return;
         }
 
-        console.log(e.clientY, ref.current.offsetTop);
         updatePlayerPosition(playerId, e.clientX - ref.current.offsetLeft, e.clientY - ref.current.offsetTop);
     };
 
