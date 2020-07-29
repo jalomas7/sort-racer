@@ -6,7 +6,6 @@ import React, {
     Dispatch,
     SetStateAction,
     useCallback,
-    useMemo,
     useEffect,
 } from 'react';
 import {useGameContext} from './GameContextProvider';
@@ -17,8 +16,8 @@ import {PlayerStackUpdate} from '@packages/common';
 export type BallContextType = {
     activeBall: Ball | undefined;
     setActiveBall: Dispatch<SetStateAction<Ball | undefined>>;
-    onDrag: (stackId: string) => void;
-    onDrop: (stackId: string) => void;
+    onDrag: (playerId: string, stackId: string) => void;
+    onDrop: (playerId: string, stackId: string) => void;
 };
 
 const defaultBallContext: BallContextType = {
@@ -32,39 +31,36 @@ const BallContext = createContext(defaultBallContext);
 
 export const useBallContext = () => useContext(BallContext);
 
-export type BallProviderProps = {
-    thisPlayerId: string;
-};
+export type BallProviderProps = {};
 
-export const BallProvider: FunctionComponent<BallProviderProps> = ({children, thisPlayerId}) => {
+export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) => {
     const [activeBall, setActiveBall] = useState<Ball>();
     const {playerStacks, declareWinner, serverConnection} = useGameContext();
-    const ballStack = useMemo(() => playerStacks[thisPlayerId], [thisPlayerId, playerStacks]);
+    const [addedMessage, setAddedMessage] = useState(false);
 
     const checkIfWinner = useCallback(() => {
-        let playerWon: boolean = true;
-
-        if (!ballStack) {
-            return;
-        }
-
-        Object.keys(ballStack).forEach((id) => {
-            if (ballStack[id].balls.length < 1) {
-                return;
-            }
-            const firstBallColor = ballStack[id].balls[0].color;
-            ballStack[id].balls.forEach((ball) => {
-                if (ball.color !== firstBallColor) {
-                    playerWon = false;
+        Object.keys(playerStacks).forEach((k) => {
+            let playerWon: boolean = true;
+            const ballStack = playerStacks[k];
+            Object.keys(ballStack).forEach((id) => {
+                if (ballStack[id].balls.length < 1) {
                     return;
                 }
+                const firstBallColor = ballStack[id].balls[0].color;
+                ballStack[id].balls.forEach((ball) => {
+                    if (ball.color !== firstBallColor) {
+                        playerWon = false;
+                        return;
+                    }
+                });
             });
+            if (playerWon) {
+                declareWinner(k);
+                return;
+            }
         });
-        if (playerWon) {
-            declareWinner(thisPlayerId);
-            return;
-        }
-    }, [ballStack, thisPlayerId, declareWinner]);
+    }, [playerStacks, declareWinner]);
+
 
     const pickUpBall = useCallback(
         (stackId: string, playerId: string) => {
@@ -89,57 +85,67 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children, th
     );
 
     useEffect(() => {
-        serverConnection?.addEventListener('message', (ev) => {
+        if (addedMessage || !serverConnection) {
+            return;
+        }
+        console.log(addedMessage);
+        console.log('executing this effect');
+
+        setAddedMessage(true);
+
+        const stackUpdate = (ev: WebSocketEventMap['message']) => {
             try {
                 const data: WSEvent<any> = JSON.parse(ev.data);
                 switch (data.event) {
                     case WSEventName.UPDATE_COLUMNS:
                         const {type, playerId, stackId} = (data as WSEvent<PlayerStackUpdate>).data;
-                            console.log('got here with', data.data);
+                        console.log('got here with', data.data);
                         if (type === PlayerStackUpdateTypes.ADD) {
-                            pickUpBall(stackId, playerId);
-                        } else {
                             dropBall(stackId, playerId);
+                        } else {
+                            pickUpBall(stackId, playerId);
                         }
                 }
             } catch {
                 console.log('not json data');
             }
-        });
-    }, [serverConnection, pickUpBall, dropBall]);
+        };
+
+        serverConnection.addEventListener('message', stackUpdate);
+    }, []); //eslint-disable-line
 
     const onDrag = useCallback(
-        (stackId: string) => {
-            pickUpBall(stackId, thisPlayerId);
+        (playerId: string, stackId: string) => {
+            pickUpBall(stackId, playerId);
             serverConnection?.send(
                 JSON.stringify({
                     event: WSEventName.UPDATE_COLUMNS,
                     data: {
-                        playerId: thisPlayerId,
+                        playerId,
                         stackId,
                         type: 'remove',
                     },
                 } as WSEvent<PlayerStackUpdate>),
             );
         },
-        [playerStacks[thisPlayerId]], //eslint-disable-line react-hooks/exhaustive-deps
+        [pickUpBall, serverConnection]
     );
 
     const onDrop = useCallback(
-        (stackId: string) => {
-            dropBall(stackId, thisPlayerId);
+        (playerId: string, stackId: string) => {
+            dropBall(stackId, playerId);
             serverConnection?.send(
                 JSON.stringify({
                     event: WSEventName.UPDATE_COLUMNS,
                     data: {
-                        playerId: thisPlayerId,
+                        playerId,
                         stackId,
                         type: 'add',
                     },
                 } as WSEvent<PlayerStackUpdate>),
             );
         },
-        [playerStacks[thisPlayerId], activeBall], //eslint-disable-line react-hooks/exhaustive-deps
+        [dropBall, serverConnection],
     );
 
     const value: BallContextType = {

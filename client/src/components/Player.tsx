@@ -38,7 +38,7 @@ const Player: FunctionComponent<PlayerProps> = ({playerId}) => {
     return (
         <PlayerContainer onMouseMoveCapture={updateActiveBallPos} id={playerId}>
             {Object.keys(playerStacks[playerId]).map((id) => (
-                <BallStack balls={playerStacks[playerId][id].balls} key={id} id={id} />
+                <BallStack balls={playerStacks[playerId][id].balls} key={id} playerId={playerId} stackId={id} />
             ))}
             {activeBall && <Ball x={x} y={y} color={activeBall.color} id={activeBall.id} />}
         </PlayerContainer>

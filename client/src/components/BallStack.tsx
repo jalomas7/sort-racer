@@ -2,7 +2,7 @@ import React, {FunctionComponent} from 'react';
 import BallComponent from './Ball';
 import styled from '@emotion/styled';
 import {useBallContext} from '../providers';
-import { Ball } from '@packages/common';
+import {Ball} from '@packages/common';
 
 const BallStackContainer = styled.div`
     min-width: 55px;
@@ -25,19 +25,20 @@ const BallStackVase = styled.div`
 `;
 
 export type BallStackProps = {
-    id: string;
+    playerId: string;
+    stackId: string;
     balls: Ball[];
 };
 
-const BallStack: FunctionComponent<BallStackProps> = ({balls, id}) => {
+const BallStack: FunctionComponent<BallStackProps> = ({balls, playerId, stackId}) => {
     const {onDrag, onDrop, activeBall} = useBallContext();
 
     return (
         <BallStackContainer
-            onMouseDown={() => !activeBall && onDrag(id)}
-            onMouseUp={() => activeBall && onDrop(id)}
+            onMouseDown={() => !activeBall && onDrag(playerId, stackId)}
+            onMouseUp={() => activeBall && onDrop(playerId, stackId)}
             onClick={() => {
-                activeBall && onDrop(id);
+                activeBall && onDrop(playerId, stackId);
             }}
         >
             <BallStackVase />

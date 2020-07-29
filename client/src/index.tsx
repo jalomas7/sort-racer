@@ -4,7 +4,7 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import {GameContextProvider} from './providers';
+import {GameContextProvider, BallProvider} from './providers';
 
 const basePath = process.env.REACT_APP_BASE_PATH || '/';
 
@@ -14,7 +14,9 @@ ReactDOM.render(
             <Switch>
                 <Route exact path="/">
                     <GameContextProvider>
-                        <App />
+                        <BallProvider>
+                            <App />
+                        </BallProvider>
                     </GameContextProvider>
                 </Route>
             </Switch>
