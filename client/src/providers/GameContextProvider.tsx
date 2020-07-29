@@ -108,18 +108,6 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
     const resetGame = () => {
         setGameWon(false);
         ws?.send(JSON.stringify({event: WSEventName.CONNECTED, data: {players}}));
-        // const colors: string[] = getRandomHexColors(4, 2);
-        // setBallColors(colors);
-        // const stacks: PlayerStacks = {};
-        // players.forEach((player) => {
-        //     for (let i = 0; i < colors.length + 1; i++) {
-        //         stacks[player] = {
-        //             ...stacks[player],
-        //             [uuid()]: {balls: createBallStack(shuffle<string>(colors))},
-        //         };
-        //     }
-        // });
-        // setPlayerStacks(stacks);
     };
 
     const declareWinner = (winner: string) => {

@@ -36,7 +36,6 @@ export type BallProviderProps = {};
 export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) => {
     const [activeBall, setActiveBall] = useState<Ball>();
     const {playerStacks, declareWinner, serverConnection} = useGameContext();
-    const [addedMessage, setAddedMessage] = useState(false);
 
     const checkIfWinner = useCallback(() => {
         Object.keys(playerStacks).forEach((k) => {
@@ -64,6 +63,7 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
 
     const pickUpBall = useCallback(
         (stackId: string, playerId: string) => {
+            console.log('calling with ', playerStacks[playerId][stackId].balls);
             const ball = playerStacks[playerId][stackId].balls.shift();
             setActiveBall(ball);
         },
@@ -83,36 +83,6 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
         },
         [playerStacks, activeBall, checkIfWinner],
     );
-
-    useEffect(() => {
-        if (addedMessage || !serverConnection) {
-            return;
-        }
-        console.log(addedMessage);
-        console.log('executing this effect');
-
-        setAddedMessage(true);
-
-        const stackUpdate = (ev: WebSocketEventMap['message']) => {
-            try {
-                const data: WSEvent<any> = JSON.parse(ev.data);
-                switch (data.event) {
-                    case WSEventName.UPDATE_COLUMNS:
-                        const {type, playerId, stackId} = (data as WSEvent<PlayerStackUpdate>).data;
-                        console.log('got here with', data.data);
-                        if (type === PlayerStackUpdateTypes.ADD) {
-                            dropBall(stackId, playerId);
-                        } else {
-                            pickUpBall(stackId, playerId);
-                        }
-                }
-            } catch {
-                console.log('not json data');
-            }
-        };
-
-        serverConnection.addEventListener('message', stackUpdate);
-    }, []); //eslint-disable-line
 
     const onDrag = useCallback(
         (playerId: string, stackId: string) => {
@@ -147,6 +117,35 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
         },
         [dropBall, serverConnection],
     );
+
+    useEffect(() => {
+        if (!serverConnection) {
+            return;
+        }
+
+        const stackUpdate = (ev: WebSocketEventMap['message']) => {
+            try {
+                const data: WSEvent<any> = JSON.parse(ev.data);
+                switch (data.event) {
+                    case WSEventName.UPDATE_COLUMNS:
+                        const {type, playerId, stackId} = (data as WSEvent<PlayerStackUpdate>).data;
+                        console.log('got here with ', type, playerId, stackId, playerStacks);
+                        if (type === PlayerStackUpdateTypes.ADD) {
+                            dropBall(stackId, playerId);
+                        } else {
+                            pickUpBall(stackId, playerId);
+                        }
+                }
+            } catch (error){
+                console.log('error updating stack')
+                console.log(error);
+            }
+        };
+
+        serverConnection.addEventListener('message', stackUpdate);
+
+        return () => serverConnection.removeEventListener('message', stackUpdate);
+    }, [serverConnection, pickUpBall, dropBall]); //eslint-disable-line
 
     const value: BallContextType = {
         activeBall,

@@ -20,7 +20,7 @@ const App = () => {
         <AppContainer>
             <GameWon />
                 {players.map((player) => (
-                    <Player playerId={player} />
+                    <Player playerId={player} key={player} />
                 ))}
         </AppContainer>
     );
