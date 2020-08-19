@@ -1,6 +1,7 @@
 import React, {createContext, useContext, FunctionComponent, useEffect, useState} from 'react';
 import {v4 as uuid} from 'uuid';
 import {WSEvent, WSEventName, PlayerPositionsEventData, PlayerStacks, CreatePlayerStackData} from '@packages/common';
+import {createUpdatePlayerPositionEvent} from '../utils/events/createEvents';
 
 export type GameContextType = {
     players: string[];
@@ -92,18 +93,11 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
     const updatePlayerPosition = (playerId: string, x: number, y: number) => {
         setPlayerPositions((p) => ({...p, [playerId]: {x, y}}));
         if (ws && ws.readyState === ws.OPEN) {
-            ws.send(
-                JSON.stringify({
-                    event: WSEventName.POSITION_UPDATE,
-                    data: {
-                        [playerId]: {x, y},
-                    },
-                }),
-            );
+            ws.send(createUpdatePlayerPositionEvent(playerId, x, y));
         }
     };
 
-    const getPlayerPosition = (playerId: string) => playerPositions[playerId] || ({x: 0, y: 0});
+    const getPlayerPosition = (playerId: string) => playerPositions[playerId] || {x: 0, y: 0};
 
     const resetGame = () => {
         setGameWon(false);
