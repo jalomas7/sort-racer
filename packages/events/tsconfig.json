@@ -1,0 +1,7 @@
+{
+    "extends": "../../tsconfig.packages",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "dist"
+    }
+}

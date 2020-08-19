@@ -13,6 +13,7 @@ import {WSEventName, PlayerStackUpdateTypes, Ball} from '@packages/common';
 import {WSEvent} from '@packages/common';
 import {PlayerStackUpdate} from '@packages/common';
 import {BallStack} from '../components';
+import {createDropBallEvent, createDragBallEvent} from '../utils/events/createEvents';
 
 type ActiveBallsMap = {
     [playerId: string]: Ball | undefined;
@@ -94,16 +95,7 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
     const onDrag = useCallback(
         (playerId: string, stackId: string) => {
             pickUpBall(stackId, playerId);
-            serverConnection?.send(
-                JSON.stringify({
-                    event: WSEventName.UPDATE_COLUMNS,
-                    data: {
-                        playerId,
-                        stackId,
-                        type: 'remove',
-                    },
-                } as WSEvent<PlayerStackUpdate>),
-            );
+            serverConnection?.send(createDragBallEvent(playerId, stackId));
         },
         [pickUpBall, serverConnection],
     );
@@ -111,16 +103,7 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
     const onDrop = useCallback(
         (playerId: string, stackId: string) => {
             dropBall(stackId, playerId);
-            serverConnection?.send(
-                JSON.stringify({
-                    event: WSEventName.UPDATE_COLUMNS,
-                    data: {
-                        playerId,
-                        stackId,
-                        type: 'add',
-                    },
-                } as WSEvent<PlayerStackUpdate>),
-            );
+            serverConnection?.send(createDropBallEvent(playerId, stackId));
         },
         [dropBall, serverConnection],
     );

@@ -7,6 +7,7 @@
         "@emotion/core": "^10.0.28",
         "@emotion/styled": "^10.0.27",
         "@packages/common": "*",
+        "@packages/events": "*",
         "@packages/utils": "*",
         "@testing-library/jest-dom": "^4.2.4",
         "@testing-library/react": "^9.3.2",
