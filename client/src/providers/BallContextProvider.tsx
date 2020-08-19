@@ -79,8 +79,8 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
     const dropBall = useCallback(
         (stackId: string, playerId: string) => {
             const balls = playerStacks[playerId][stackId].balls;
-            const activeBall = activeBalls[playerId]
-            if (!activeBall|| balls.length > 4) {
+            const activeBall = activeBalls[playerId];
+            if (!activeBall || balls.length > 4) {
                 return;
             }
 

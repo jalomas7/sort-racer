@@ -1,13 +1,13 @@
 import {WSEvent, WSEventName} from '@packages/common';
 import WebSocket from 'ws';
-import {echoHandler} from './echoHandler';
 import {HandlerRegistry} from './types';
 import { connectedHandler } from './connectedHandler';
 import { playerStackUpdateHandler } from './playerStackUpdateHandler';
+import {positionUpdateHandler} from './positionUpdateHandler';
 
 const handlers: HandlerRegistry = {
     [WSEventName.CONNECTED]: connectedHandler,
-    [WSEventName.POSITION_UPDATE]: echoHandler,
+    [WSEventName.POSITION_UPDATE]: positionUpdateHandler,
     [WSEventName.UPDATE_COLUMNS]: playerStackUpdateHandler
 };
 
