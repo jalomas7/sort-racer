@@ -1,5 +1,11 @@
 import {createWsEvent} from '@packages/events';
-import {WSEventName, PlayerStackUpdate, PlayerStackUpdateTypes, PlayerPositionsEventData, ConnectedEventData} from '@packages/common';
+import {
+    WSEventName,
+    PlayerStackUpdate,
+    PlayerStackUpdateTypes,
+    PlayerPositionsEventData,
+    ConnectedEventData,
+} from '@packages/common';
 
 export const createDropBallEvent = (playerId: string, stackId: string) => {
     return createWsEvent<PlayerStackUpdate>(WSEventName.UPDATE_COLUMNS, {
@@ -22,3 +28,13 @@ export const createUpdatePlayerPositionEvent = (playerId: string, x: number, y: 
         [playerId]: {x, y},
     });
 };
+
+export const createConnectedEvent = (player: string) => {
+    return createWsEvent<ConnectedEventData>(WSEventName.CONNECTED, {
+        player,
+    });
+};
+
+export const createResetGameEvent = () => {
+    return createWsEvent(WSEventName.RESET_GAME, {});
+}

@@ -4,11 +4,13 @@ import {HandlerRegistry} from './types';
 import { connectedHandler } from './connectedHandler';
 import { playerStackUpdateHandler } from './playerStackUpdateHandler';
 import {positionUpdateHandler} from './positionUpdateHandler';
+import {resetGameHandler} from './resetGameHandler';
 
 const handlers: HandlerRegistry = {
     [WSEventName.CONNECTED]: connectedHandler,
     [WSEventName.POSITION_UPDATE]: positionUpdateHandler,
-    [WSEventName.UPDATE_COLUMNS]: playerStackUpdateHandler
+    [WSEventName.UPDATE_COLUMNS]: playerStackUpdateHandler,
+    [WSEventName.RESET_GAME]: resetGameHandler
 };
 
 export const handleEvent = <T>(ws: WebSocket, event: WSEvent<T>) => {

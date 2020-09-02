@@ -1,7 +1,11 @@
 import React, {createContext, useContext, FunctionComponent, useEffect, useState} from 'react';
 import {v4 as uuid} from 'uuid';
 import {WSEvent, WSEventName, PlayerPositionsEventData, PlayerStacks, CreatePlayerStackData} from '@packages/common';
-import {createUpdatePlayerPositionEvent} from '../utils/events/createEvents';
+import {
+    createUpdatePlayerPositionEvent,
+    createConnectedEvent,
+    createResetGameEvent,
+} from '../utils/events/createEvents';
 
 export type GameContextType = {
     players: string[];
@@ -52,7 +56,7 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
     useEffect(() => {
         const thisWs = new WebSocket('ws://localhost:8080');
         thisWs.addEventListener('open', () => {
-            thisWs.send(JSON.stringify({event: WSEventName.CONNECTED, data: {player: uuid()}}));
+            thisWs.send(createConnectedEvent(uuid()));
         });
         thisWs.addEventListener('message', (ev) => {
             try {
@@ -101,7 +105,7 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
 
     const resetGame = () => {
         setGameWon(false);
-        ws?.send(JSON.stringify({event: WSEventName.CONNECTED, data: {players}}));
+        ws?.send(createResetGameEvent());
     };
 
     const declareWinner = (winner: string) => {
