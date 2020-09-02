@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
-import {handleEvent} from './handlers';
-import { updatePlayers } from './utils/updatePlayers';
+import {handleEvent} from './events';
+import {updatePlayers} from './utils';
 
 export const Server = new WebSocket.Server({port: 8080, host: 'localhost'});
 export const Players: Map<WebSocket, string> = new Map();
