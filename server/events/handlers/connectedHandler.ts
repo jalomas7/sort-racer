@@ -1,12 +1,11 @@
 import {Handler} from '@root/events';
 import {ConnectedEventData} from '@packages/common';
-import {resetGame} from '@root/utils';
-import {Players} from '@root/server';
+import {resetGame, ServerPlayerManager} from '@root/utils';
 
 export const connectedHandler: Handler<ConnectedEventData> = (ws, event) => {
     const {
         data: {player},
     } = event;
-    Players.set(ws, player);
+    ServerPlayerManager.set(ws, player);
     resetGame();
 };
