@@ -131,7 +131,6 @@ export const BallProvider: FunctionComponent<BallProviderProps> = ({children}) =
             }
         };
 
-        // TODO: this gets triggered twice for the receiving client, fix
         serverConnection.addEventListener('message', stackUpdate);
 
         return () => serverConnection.removeEventListener('message', stackUpdate);
