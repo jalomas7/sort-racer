@@ -54,7 +54,7 @@ export const GameContextProvider: FunctionComponent<GameContextProviderProps> = 
     }, [players]);
 
     useEffect(() => {
-        const thisWs = new WebSocket('ws://localhost:8080');
+        const thisWs = new WebSocket(process.env.REACT_APP_SERVER_URL || '');
         thisWs.addEventListener('open', () => {
             thisWs.send(createConnectedEvent(uuid()));
         });
