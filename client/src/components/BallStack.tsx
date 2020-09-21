@@ -1,8 +1,8 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useMemo} from 'react';
 import BallComponent from './Ball';
 import styled from '@emotion/styled';
-import {Ball} from '../types';
 import {useBallContext} from '../providers';
+import {Ball} from '@packages/common';
 
 const BallStackContainer = styled.div`
     min-width: 55px;
@@ -25,24 +25,27 @@ const BallStackVase = styled.div`
 `;
 
 export type BallStackProps = {
-    id: string;
+    playerId: string;
+    stackId: string;
     balls: Ball[];
 };
 
-const BallStack: FunctionComponent<BallStackProps> = ({balls, id}) => {
-    const {onDrag, onDrop, activeBall} = useBallContext();
+const BallStack: FunctionComponent<BallStackProps> = ({balls, playerId, stackId}) => {
+    const {onDrag, onDrop, activeBalls} = useBallContext();
+
+    const activeBall = useMemo(() => activeBalls[playerId], [playerId, activeBalls]);
 
     return (
         <BallStackContainer
-            onMouseDown={() => !activeBall && onDrag(id)}
-            onMouseUp={() => activeBall && onDrop(id)}
+            onMouseDown={() => !activeBall && onDrag(playerId, stackId)}
+            onMouseUp={() => activeBall && onDrop(playerId, stackId)}
             onClick={() => {
-                activeBall && onDrop(id);
+                activeBall && onDrop(playerId, stackId);
             }}
         >
             <BallStackVase />
             {balls.map(({color, id}) => (
-                <BallComponent color={color} key={id} id={id} />
+                <BallComponent color={color} key={id} id={id} playerId={playerId} />
             ))}
         </BallStackContainer>
     );

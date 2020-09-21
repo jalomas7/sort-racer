@@ -1,4 +1,4 @@
-import React, {useState, FunctionComponent} from 'react';
+import React, {FunctionComponent, useMemo, useRef} from 'react';
 import styled from '@emotion/styled';
 import BallStack from './BallStack';
 import Ball from './Ball';
@@ -14,6 +14,7 @@ const PlayerContainer = styled.div`
     color: white;
     border: 5px solid white;
     margin: 0 10px;
+    position: relative;
 `;
 
 export type PlayerProps = {
@@ -21,27 +22,32 @@ export type PlayerProps = {
 };
 
 const Player: FunctionComponent<PlayerProps> = ({playerId}) => {
-    const {activeBall} = useBallContext();
-    const {playerStacks} = useGameContext();
-    const [xPos, setXPos] = useState<number>(0);
-    const [yPos, setYPos] = useState<number>(0);
+    const {activeBalls} = useBallContext();
+    const {playerStacks, updatePlayerPosition, getPlayerPosition} = useGameContext();
+    const activeBall = useMemo(() => activeBalls[playerId], [playerId, activeBalls]);
+    const ref = useRef<HTMLDivElement>(null);
 
     const updateActiveBallPos = (e: React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
-        setXPos(e.clientX);
-        setYPos(e.clientY);
+        if(!ref.current) {
+            return;
+        }
+
+        updatePlayerPosition(playerId, e.clientX - ref.current.offsetLeft, e.clientY - ref.current.offsetTop);
     };
 
     if (!playerStacks[playerId]) {
         return <React.Fragment />;
     }
 
+    const {x, y} = getPlayerPosition(playerId);
+
     return (
-        <PlayerContainer onMouseMoveCapture={updateActiveBallPos} id={playerId}>
+        <PlayerContainer ref={ref} onMouseMoveCapture={updateActiveBallPos} id={playerId}>
             {Object.keys(playerStacks[playerId]).map((id) => (
-                <BallStack balls={playerStacks[playerId][id].balls} key={id} id={id} />
+                <BallStack balls={playerStacks[playerId][id].balls} key={id} playerId={playerId} stackId={id} />
             ))}
-            {activeBall && <Ball x={xPos} y={yPos} color={activeBall.color} id={activeBall.id} />}
+            {activeBall && <Ball x={x} y={y} color={activeBall.color} id={activeBall.id} playerId={playerId}/>}
         </PlayerContainer>
     );
 };
