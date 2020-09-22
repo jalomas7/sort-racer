@@ -8,7 +8,7 @@
         "build": "tsc -b"
     },
     "dependencies": {
-        "@packages/common": "*",
+        "@packages/common": "file:../packages/common",
         "@packages/utils": "*",
         "cross-env": "^7.0.2",
         "dotenv": "^8.2.0",
