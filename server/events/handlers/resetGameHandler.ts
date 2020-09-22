@@ -1,6 +1,6 @@
-import {Handler} from '@root/events';
+import {Handler} from '../../events';
 import {ConnectedEventData} from '@packages/common';
-import {resetGame} from '@root/utils';
+import {resetGame} from '../../utils';
 
 export const resetGameHandler: Handler<ConnectedEventData> = () => {
     resetGame();

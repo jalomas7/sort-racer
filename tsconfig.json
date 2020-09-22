@@ -4,8 +4,10 @@
         "baseUrl": ".",
         "declarationMap": true
     },
-    "include": ["packages"],
+    "include": ["packages", "server"],
     "references": [
         {"path": "packages/common"},
+        {"path": "packages/events"},
+        {"path": "packages/utils"}
     ]
 }
