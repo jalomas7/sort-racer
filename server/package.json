@@ -5,10 +5,11 @@
     "private": true,
     "scripts": {
         "start": "ts-node -r tsconfig-paths/register index.ts",
-        "build": "tsc -b"
+        "build": "tsc -b",
+        "build:clean": "rm -rf build"
     },
     "dependencies": {
-        "@packages/common": "file:../packages/common",
+        "@packages/common": "*",
         "@packages/utils": "*",
         "cross-env": "^7.0.2",
         "dotenv": "^8.2.0",

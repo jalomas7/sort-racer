@@ -2090,9 +2090,6 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@packages/common@file:packages/common":
-  version "1.0.0"
-
 "@sheerun/mutationobserver-shim@^0.3.2":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@sheerun/mutationobserver-shim/-/mutationobserver-shim-0.3.3.tgz#5405ee8e444ed212db44e79351f0c70a582aae25"

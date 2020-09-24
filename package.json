@@ -14,8 +14,8 @@
         "lerna": "^3.22.1"
     },
     "scripts": {
-        "build": "lerna run --scope '@packages/*' build ",
-        "build:clean": "lerna run --scope '@packages/*' build ",
+        "build": "lerna run build ",
+        "build:clean": "lerna run build:clean",
         "start:client": "lerna run start --scope 'client'",
         "start:server": "lerna run start --scope 'server'",
         "build:client": "lerna run build --scope 'client'",
