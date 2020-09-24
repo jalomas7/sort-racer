@@ -5,7 +5,7 @@
     "main": "./dist/index.js",
     "typings": "./dist/index.d.ts",
     "scripts": {
-        "build": "npm run clean && npm run compile",
+        "build": "yarn build:clean && yarn compile",
         "build:clean": "rm -rf ./dist",
         "compile": "tsc -p tsconfig.json"
     },
