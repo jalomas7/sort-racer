@@ -10,10 +10,10 @@ COPY tsconfig*.json ./
 COPY packages/common packages/common
 COPY packages/utils packages/utils
 
-RUN yarn
+RUN yarn --production
 WORKDIR /sort-racer/server
 RUN yarn && yarn build
 
-EXPOSE 80
+EXPOSE 443
 
 CMD [ "node", "./build/server" ]
