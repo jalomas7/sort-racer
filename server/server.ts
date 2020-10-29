@@ -2,12 +2,11 @@ import WebSocket from 'ws';
 import {handleEvent} from './events';
 import {ServerPlayerManager} from './utils';
 
-const host = process.env.SERVER_HOST;
 const port = Number(process.env.SERVER_PORT) || 8080;
 
-export const Server = new WebSocket.Server({host, port});
+export const Server = new WebSocket.Server({port});
 
-console.log(`server running at ${host}:${port}`);
+console.log(`server running at port ${port}`);
 
 Server.on('connection', (ws) => {
     console.log('connection recieved');

@@ -1,4 +1,4 @@
-import { Handler } from "@root/events";
+import { Handler } from "../../events";
 import { PlayerPositionsEventData } from "@packages/common";
 import { broadcastHandler } from "./broadcastHandler";
 
