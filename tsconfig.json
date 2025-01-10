@@ -4,10 +4,22 @@
         "baseUrl": ".",
         "declarationMap": true
     },
-    "include": ["packages", "server"],
+    "include": [
+        "packages",
+        "server"
+    ],
+    "exclude": [
+        "node_modules"
+    ],
     "references": [
-        {"path": "packages/common"},
-        {"path": "packages/events"},
-        {"path": "packages/utils"}
+        {
+            "path": "packages/common"
+        },
+        {
+            "path": "packages/events"
+        },
+        {
+            "path": "packages/utils"
+        }
     ]
 }

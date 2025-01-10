@@ -4,9 +4,19 @@
         "rootDir": "../",
         "outDir": "./build",
     },
-    "include": ["."],
+    "include": [
+        "."
+    ],
+    "exclude": [
+        "/**/node_modules",
+        "build"
+    ],
     "references": [
-        {"path": "../packages/common"},
-        {"path": "../packages/utils"}
+        {
+            "path": "../packages/common"
+        },
+        {
+            "path": "../packages/utils"
+        }
     ]
 }

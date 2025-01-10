@@ -7,7 +7,7 @@
     "scripts": {
         "build": "yarn build:clean && yarn compile",
         "build:clean": "rm -rf ./dist",
-        "compile": "tsc -p tsconfig.json"
+        "compile": "tsc -p tsconfig.json --skipLibCheck"
     },
     "devDependencies": {
         "typescript": "^3.9.5"

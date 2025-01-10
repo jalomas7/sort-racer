@@ -21,5 +21,6 @@
         "start:server": "lerna run start --scope 'server'",
         "build:client": "lerna run build --scope 'client'",
         "build:server": "lerna run build --scope 'server'"
-    }
+    },
+    "packageManager": "yarn@1.0.0"
 }
